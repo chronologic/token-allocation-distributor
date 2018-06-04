@@ -6,10 +6,10 @@ version 0.4.23 but the latest compiler used by Truffle version 4.1.11 is
 - [x] In some parts of the code, "stakeHolders" are capitalized like so, "StakeHolders"
 while in other parts the "h" is small like "Stakeholders". it is recommened
 to change all variables to confirm to one or the other.
-- [ ] The field `targetToken` is used just as a convenience for the fallback function.
+- [ ] ~~The field `targetToken` is used just as a convenience for the fallback function.
 Consider removing this storage field in favor of explicitly passing the token
 address every time the contract is called, and removing the fallback function. This
-would save on one SSTORE operation and reduce gas costs.
+would save on one SSTORE operation and reduce gas costs.~~
 
 TokenDistributor
 ----------------
