@@ -25,6 +25,10 @@ contract TokenDistributor is Ownable {
         }
     }
 
+    function isDistributionDue (address _token) public view returns (bool) {
+        return getTokenBalance(_token) > 1;
+    }
+
     function isDistributionDue () public view returns (bool) {
         return getTokenBalance(targetToken) > 1;
     }
