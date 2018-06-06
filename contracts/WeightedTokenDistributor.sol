@@ -5,7 +5,7 @@ import "./TokenDistributor.sol";
 contract WeightedTokenDistributor is TokenDistributor {
     using SafeMath for uint;
 
-    mapping( address => uint256) stakeHoldersWeight;
+    mapping( address => uint256) public stakeHoldersWeight;
 
     constructor ( address _targetToken, uint256 _totalStakeHolders, address[] _stakeHolders, uint256[] _weights) public
     TokenDistributor(_targetToken, _totalStakeHolders, stakeHolders)
