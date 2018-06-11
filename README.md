@@ -7,13 +7,13 @@ Distribute allocated ERC20 tokens based on set conditions
 
 |Contract| Deployment Cost | Address |
 |-|-| --|
-|TokenDistributor| **975437** | [0xe2ed0c69e0d9eeadbe97b4f02d37670e479e0e00](https://ropsten.etherscan.io/address/0xe2ed0c69e0d9eeadbe97b4f02d37670e479e0e00)|  
-|WeightedTokenDistributor| **1414006** |[0x273f541d5268ed777271c4ea11103ecb448f7168](https://kovan.etherscan.io/address/0x273f541d5268ed777271c4ea11103ecb448f7168)|
+|TokenDistributor| **1090604** | [0xab330365aa3d2edb19883e7502670dbaafcf8ee1](https://ropsten.etherscan.io/address/0xab330365aa3d2edb19883e7502670dbaafcf8ee1)|  
+|WeightedTokenDistributor| **1529386** |[0xd2bd69b80765fd89284fef5cd13286d0674c98a1](https://ropsten.etherscan.io/address/0xd2bd69b80765fd89284fef5cd13286d0674c98a1)|
 
 
 #### Kovan  
 
 |Contract| Deployment Cost | Address |
 |-|-| --|
-|TokenDistributor| **975437** | [0xfc2d121914ed6df624afd3b24e66679a47b95525](https://kovan.etherscan.io/address/0xfc2d121914ed6df624afd3b24e66679a47b95525)|  
-|WeightedTokenDistributor| **1414006** |[0x3095e9e8b274f5a68d2168a7a0843a02836cf705](https://kovan.etherscan.io/address/0x3095e9e8b274f5a68d2168a7a0843a02836cf705)|
+|TokenDistributor (`null _targetToken`)| **1068786** | [0xc0b871edfe1c213c406453861c4d9594c510e8eb](https://kovan.etherscan.io/address/0xc0b871edfe1c213c406453861c4d9594c510e8eb)|  
+|WeightedTokenDistributor (`null _targetToken`)| **1507568** |[0xf3d4fce14a65e058dd9ff4475b80b92fd49e4a1a](https://kovan.etherscan.io/address/0xf3d4fce14a65e058dd9ff4475b80b92fd49e4a1a)|
