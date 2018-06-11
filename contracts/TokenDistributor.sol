@@ -14,7 +14,7 @@ contract TokenDistributor is Ownable {
     event TokensDistributed( address indexed _token, uint256 _total, uint256 _time );
 
     constructor ( address _targetToken, uint256 _totalStakeHolders, address[] _stakeHolders) public Ownable() {
-        targetToken = _targetToken;
+        setTargetToken(_targetToken);
         maxStakeHolders = _totalStakeHolders;
         if (_stakeHolders.length > 0) {
             for (uint256 count = 0; count < _stakeHolders.length && count < _totalStakeHolders; count++) {
@@ -44,6 +44,13 @@ contract TokenDistributor is Ownable {
 
     function getPortion (uint256 _total) public view returns (uint256) {
         return _total.div(stakeHolders.length);
+    }
+
+    function setTargetToken (address _targetToken) public onlyOwner returns (bool) {
+        if(_targetToken != 0x0 && targetToken == 0x0) {
+          targetToken = _targetToken;
+          return true;
+        }
     }
 
     function _setStakeHolder (address _stakeHolder) internal onlyOwner returns (bool) {
