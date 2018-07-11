@@ -2,7 +2,7 @@ pragma solidity ^0.4.24;
 
 import "./WeightedTokenDistributor.sol";
 
-contract WithCustomVestedContract is WeightedTokenDistributor {
+contract WithCustomVestingContract is WeightedTokenDistributor {
     using SafeMath for uint;
 
     bytes32 releaseCall;

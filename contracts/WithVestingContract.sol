@@ -6,7 +6,7 @@ pragma solidity ^0.4.24;
 
 import "./WeightedTokenDistributor.sol";
 
-contract HasVestedContract is WeightedTokenDistributor {
+contract WithVestingContract is WeightedTokenDistributor {
     using SafeMath for uint;
 
     address vestingContract;
