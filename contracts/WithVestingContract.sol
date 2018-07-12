@@ -31,6 +31,11 @@ contract WithVestingContract is WeightedTokenDistributor {
         bytes4(keccak256("release(address)"))
     ];
 
+    constructor ( address _targetToken, uint256 _totalStakeHolders, address[] _stakeHolders, uint256[] _weights) public
+    WeightedTokenDistributor(_targetToken, _totalStakeHolders, _stakeHolders, _weights)
+    {
+    }
+
     function setVestingContract (vestingContractVersion _version, address _vestingContract) public onlyOwner returns (bool) {
         require(vestingContract == 0x0);
         vestingContract = _vestingContract;
