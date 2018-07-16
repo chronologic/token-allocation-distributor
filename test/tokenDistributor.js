@@ -23,7 +23,7 @@ contract('==TokenDistributor==', (accounts) => {
   console.log('Total StakeHolders: ', stakeHoldersCount)
   console.log('StakeHolders: ', stakeHolders)
 
-  it('Should deploy the Contract', async () => {
+  before(async () => {
     await newDummy().then((_instance) => {
       token = _instance;
     }).then( async () => {

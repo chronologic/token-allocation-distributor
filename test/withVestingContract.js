@@ -34,7 +34,7 @@ const forceMine = async (time) => {
 
 contract('WithVestingContract', (accounts) => {
   let token;
-  let distributor;
+  let vesting;
   let instance;
   const me = accounts[0];
   const stakeHoldersCount = 1;
@@ -43,11 +43,11 @@ contract('WithVestingContract', (accounts) => {
 
   const vestingConfig = {
       _start: makeBlockchainTime(new Date().getTime),
-      _cliff: makeBlockchainTime(900000),
-      _duration: makeBlockchainTime(1800000)
+      _cliff: makeBlockchainTime(new Date().getTime + 900000),
+      _duration: makeBlockchainTime(2400000)
   }
 
-  it('Should deploy the Contract', async () => {
+  before( async () => {
     await newDummyToken().then((_instance) => {
       token = _instance;
       web3 = _instance.constructor.web3
@@ -58,37 +58,91 @@ contract('WithVestingContract', (accounts) => {
         stakeHolders,
         stakeHoldersWeights
       ).then((_instance) => {
-        distributor = _instance;
+        instance = _instance;
       })
     })
     .then( async () => {
       return await newDummyVesting(
-        distributor.address,
+        instance.address,
         vestingConfig._start,
         vestingConfig._cliff,
         vestingConfig._duration,
         false
       ).then((_instance) => {
-        instance = _instance;
+        vesting = _instance;
       })
     })
     console.log('Web3: ', web3.version.api ? web3.version.api : web3.version);
     console.log('Token: ', token.address)
-    console.log('Vesting Contract: ', instance.address)
-    console.log('TokenDistributor: ', distributor.address)
+    console.log('Vesting Contract: ', vesting.address)
+    console.log('TokenDistributor: ', instance.address)
   })
 
-  describe.skip('_setStakeHolder()', () => {
+  describe('setVestingContract()', () => {
 
-    it('Should fail to access setHolder', () => {
-      assert.strictEqual(instance._setStakeHolder, undefined, 'setStakeHolder function could be accessed');
+    it('Should fail to set Vesting Contract from Random address', async () => {
+      try{
+        await instance.setVestingContract(1, vesting.address, {
+          from: accounts[1]
+        });
+        assert.fail('Random address should not be able to set Vesting details');
+      } catch (e) {
+        assert.ok('Access denied');
+      }
+    })
+
+    it('Should fail to set invalid Vesting Contract address', async () => {
+      try{
+        await instance.setVestingContract(1, 0, {
+          from: me
+        });
+        assert.fail('Should not be able to set null Vesting details');
+      } catch (e) {
+        assert.ok('Access denied');
+      }
+    })
+
+    it('Should successfully set Vesting Contract details', async () => {
+        await instance.setVestingContract(1, vesting.address, {
+          from: me
+        });
+        const vestingAddress = await instance.vestingContract.call();
+        assert.strictEqual(vestingAddress, vesting.address, `invalid Vesting address set`);
     })
   })
 
-  describe.skip('_transfer()', () => {
+  describe('release()', () => {
 
-    it('Should fail to access transfer', () => {
-      assert.strictEqual(instance._transfer, undefined, '_transfer function could be accessed');
+    it('Should fail to release unallocated tokens ', async () => {
+      const releasableAmount = await vesting.releasableAmount.call(token.address);
+      assert.equal(releasableAmount.valueOf(), 0, 'Should have no allocated token');
+      try {
+        await instance.release();
+        assert.fail('Should be unable to release zero token balance');
+      } catch (e) {
+        assert.ok('Access denied');
+      }
+    })
+
+    it('Should fail to release tokens before due time', async () => {
+      const tokensToMint = 100000 * 1e18;
+      await token.mint(vesting.address, tokensToMint);
+
+      const blocktime = (await web3.eth.getBlock('latest')).timestamp;
+      const cliff = await vesting.cliff.call();
+
+      console.log(blocktime.valueOf(), cliff.valueOf());
+      //
+      //
+      // const releasableAmount = await vesting.releasableAmount.call(token.address);
+      // assert.equal(releasableAmount.valueOf(), 0, 'Tokens already ready for release');
+      //
+      // try {
+      //   await instance.release();
+      //   assert.fail('Should be unable to release tokens before due time');
+      // } catch (e) {
+      //   assert.ok('Access denied');
+      // }
     })
   })
 })

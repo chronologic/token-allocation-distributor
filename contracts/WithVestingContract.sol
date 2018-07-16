@@ -48,6 +48,7 @@ contract WithVestingContract is WeightedTokenDistributor {
         if (_version == vestingContractVersion.v1) {
             return _releaseVesting (_version, _vestingContract);
         } else if ( _version == vestingContractVersion.v2) {
+            require(_targetToken != 0x0);
             result = _vestingContract.call(vestingReleaseCalls[uint256(_version)], _targetToken);
         }
         require(result);
