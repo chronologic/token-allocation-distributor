@@ -200,7 +200,7 @@ contract('WithVestingContract', (accounts) => {
       assert.isAbove( Number(releasableAmount), 0, 'Should have allocated tokens');
       try {
         await instance.releaseVesting( 0, vesting.address, token.address, {
-          from: accounts[2]
+          from: me
         });
         const newBalance = await token.balanceOf.call(instance.address);
         assert.deepEqual( newBalance, releasableAmount.add(balance), 'Wrong amount of tokens released');
@@ -218,7 +218,7 @@ contract('WithVestingContract', (accounts) => {
       assert.isAbove( Number(releasableAmount), 0, 'Should have allocated tokens');
       try {
         await instance.release({
-          from: me
+          from: accounts[2]
         });
         const newBalance = await token.balanceOf.call(instance.address);
         assert.deepEqual( newBalance, releasableAmount.add(balance), 'Wrong amount of tokens released');
