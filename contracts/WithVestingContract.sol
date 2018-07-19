@@ -4,6 +4,7 @@ https://github.com/OpenZeppelin/openzeppelin-solidity/blob/master/contracts/toke
 */
 pragma solidity ^0.4.24;
 
+import "./IvestingContract.sol";
 import "./WeightedTokenDistributor.sol";
 
 contract WithVestingContract is WeightedTokenDistributor {
@@ -26,15 +27,9 @@ contract WithVestingContract is WeightedTokenDistributor {
     address public vestingContract;
     vestingContractVersion public targetVersion;
 
-    bytes4[2] public vestingReleaseCalls = [
-        bytes4(keccak256("release()")),
-        bytes4(keccak256("release(address)"))
-    ];
-
     constructor ( address _targetToken, uint256 _totalStakeHolders, address[] _stakeHolders, uint256[] _weights) public
     WeightedTokenDistributor(_targetToken, _totalStakeHolders, _stakeHolders, _weights)
-    {
-    }
+    {}
 
     function setVestingContract (vestingContractVersion _version, address _vestingContract) public onlyOwner returns (bool) {
         require(vestingContract == 0x0);
@@ -44,23 +39,21 @@ contract WithVestingContract is WeightedTokenDistributor {
     }
 
     function _releaseVesting (vestingContractVersion _version, address _vestingContract, address _targetToken) internal returns (bool) {
-        bool result;
+        require(_targetToken != 0x0);
         if (_version == vestingContractVersion.v1) {
             return _releaseVesting (_version, _vestingContract);
-        } else if ( _version == vestingContractVersion.v2) {
-            require(_targetToken != 0x0);
-            result = _vestingContract.call(vestingReleaseCalls[uint256(_version)], _targetToken);
+        } else if (_version == vestingContractVersion.v2){
+            IvestingContract(_vestingContract).release(_targetToken);
+            return true;
         }
-        require(result);
-        return true;
+        return false;
     }
 
     function _releaseVesting (vestingContractVersion _version, address _vestingContract) internal returns (bool) {
         if (_version != vestingContractVersion.v1) {
             revert('You need to pass in the additional argument(s)');
         }
-        bool result = _vestingContract.call(vestingReleaseCalls[uint256(_version)]);
-        require(result);
+        IvestingContract(_vestingContract).release();
         return true;
     }
 
