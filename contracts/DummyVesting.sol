@@ -24,7 +24,7 @@ contract DummyVesting is Ownable {
   uint256 public duration;
 
   bool public revocable;
-  ERC20Basic public target;
+  ERC20Basic public targetToken;
 
   mapping (address => uint256) public released;
   mapping (address => bool) public revoked;
@@ -61,9 +61,9 @@ contract DummyVesting is Ownable {
   /**
   * set the target token to enableVesting release V1
   */
-  function setTarget(ERC20Basic token) public onlyOwner {
-    require(address(target) == 0x0);
-    target = token;
+  function setTargetToken(ERC20Basic token) public onlyOwner {
+    require(address(targetToken) == 0x0);
+    targetToken = token;
   }
 
   /**
@@ -86,16 +86,7 @@ contract DummyVesting is Ownable {
    * @notice Transfers vested tokens to beneficiary. (V1)
    */
   function release() public {
-
-    uint256 unreleased = releasableAmount(target);
-
-    require(unreleased > 0);
-
-    released[target] = released[target].add(unreleased);
-
-    target.transfer(beneficiary, unreleased);
-
-    emit Released(unreleased);
+    return release(targetToken);
   }
 
   /**
