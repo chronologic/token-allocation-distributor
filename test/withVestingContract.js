@@ -63,39 +63,28 @@ contract('WithVestingContract', (accounts) => {
       _duration: makeBlockchainTime(24000000)
   }
 
-  after( async () => await revert(snapshot))
-
   before( async () => {
     snapshot = await snapShot();
 
-    await newDummyToken().then(async (_instance) => {
-      token = _instance;
-      web3 = _instance.constructor.web3
+    token = await newDummyToken();
+    web3 = token.constructor.web3;
 
-      const blocktime = (await web3.eth.getBlock('latest')).timestamp;
-      vestingConfig._start = blocktime;
+    const blocktime = (await web3.eth.getBlock('latest')).timestamp;
+    vestingConfig._start = blocktime;
 
-    }).then( async () => {
-      return await newDistributor(
-        token.address,
-        stakeHoldersCount,
-        stakeHolders,
-        stakeHoldersWeights
-      ).then((_instance) => {
-        instance = _instance;
-      })
-    })
-    .then( async () => {
-      return await newDummyVesting(
-        instance.address,
-        vestingConfig._start,
-        vestingConfig._cliff,
-        vestingConfig._duration,
-        false
-      ).then((_instance) => {
-        vesting = _instance;
-      })
-    })
+    instance = await newDistributor(
+      token.address,
+      stakeHoldersCount,
+      stakeHolders,
+      stakeHoldersWeights,
+    );
+
+    vesting = await newDummyVesting(
+      instance.address,
+      vestingConfig._start,
+      vestingConfig._cliff,
+      vestingConfig._duration,
+    );
 
     const vestingBalance = await token.balanceOf(vesting.address);
     const distributorBalance = await token.balanceOf(instance.address);
@@ -225,4 +214,7 @@ contract('WithVestingContract', (accounts) => {
     })
 
   })
+
+  after( async () => await revert(snapshot))
+
 })
