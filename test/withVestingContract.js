@@ -74,7 +74,7 @@ contract('WithVestingContract', (accounts) => {
       vestingConfig._start = blocktime;
 
     }).then( async () => {
-      return await newDistributor(
+      await newDistributor(
         token.address,
         stakeHoldersCount,
         stakeHolders,
@@ -84,7 +84,7 @@ contract('WithVestingContract', (accounts) => {
       })
     })
     .then( async () => {
-      return await newDummyVesting(
+      await newDummyVesting(
         instance.address,
         vestingConfig._start,
         vestingConfig._cliff,
@@ -94,17 +94,18 @@ contract('WithVestingContract', (accounts) => {
         vesting = _instance;
       })
     })
+    .then( async() => {
+      const vestingBalance = await token.balanceOf.call(vesting.address);
+      const distributorBalance = await token.balanceOf.call(instance.address);
 
-    const vestingBalance = await token.balanceOf(vesting.address);
-    const distributorBalance = await token.balanceOf(instance.address);
+      console.log('Web3: ', web3.version.api ? web3.version.api : web3.version);
+      console.log('Token: ', token.address)
+      console.log('Vesting Contract: ', vesting.address)
+      console.log('TokenDistributor: ', instance.address)
 
-    console.log('Web3: ', web3.version.api ? web3.version.api : web3.version);
-    console.log('Token: ', token.address)
-    console.log('Vesting Contract: ', vesting.address)
-    console.log('TokenDistributor: ', instance.address)
-
-    assert.equal(Number(vestingBalance), 0, 'Vesting contract aleady has tokens');
-    assert.equal(Number(distributorBalance), 0, 'Distributor contract contract aleady has tokens');
+      assert.equal(Number(vestingBalance), 0, 'Vesting contract aleady has tokens');
+      assert.equal(Number(distributorBalance), 0, 'Distributor contract contract aleady has tokens');
+    })
   })
 
   describe('setVestingContract()', () => {
