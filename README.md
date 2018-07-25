@@ -23,6 +23,6 @@ totalStakeHolders: uint256
 
 |Contract| Deployment Cost | Address |
 |-|-| --|
-|TokenDistributor (`null _targetToken`)| **1149894** | [0x4e2e2f81eec9d327ac87a4263c3bf95b06176915](https://kovan.etherscan.io/address/0x4e2e2f81eec9d327ac87a4263c3bf95b06176915)|  
-|WeightedTokenDistributor (`null _targetToken`)| **1588458** |[0x7899b7f6c304d770300aed4fdab46c9a90892391](https://kovan.etherscan.io/address/0x7899b7f6c304d770300aed4fdab46c9a90892391)|  
-|WithVestingContract (`null _targetToken`)| **1374567** |[0x0812fc50942164e005b80887b6e80b55d68ec6db](https://kovan.etherscan.io/address/0x0812fc50942164e005b80887b6e80b55d68ec6db)|
+|TokenDistributor (`null _targetToken`)| **753445** | [0x203D7794aE117E8294e48F393A815CC8FFAf64b6](https://kovan.etherscan.io/address/0x203D7794aE117E8294e48F393A815CC8FFAf64b6)|  
+|WeightedTokenDistributor (`null _targetToken`)| **1064426** |[0x31f7C8a02230a75BD3d6b534DD46415b5c9a1b53](https://kovan.etherscan.io/address/0x31f7C8a02230a75BD3d6b534DD46415b5c9a1b53)|  
+|WithVestingContract (`null _targetToken`)| **1374631** |[0x7BC4e040729982DB3b12C91aAa34ac6498703827](https://kovan.etherscan.io/address/0x7BC4e040729982DB3b12C91aAa34ac6498703827)|
