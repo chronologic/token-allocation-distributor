@@ -189,7 +189,7 @@ contract('WithVestingContract', (accounts) => {
       const releasableAmount = await vesting.releasableAmount.call(token.address);
 
       assert.isAbove( Number(releasableAmount), 0, 'Should have allocated tokens');
-
+      
       await instance.releaseVesting( 0, vesting.address, token.address, {
         from: me
       });
