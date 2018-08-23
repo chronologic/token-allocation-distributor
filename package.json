@@ -1,0 +1,34 @@
+{
+  "name": "token-allocation-distributor",
+  "version": "0.0.1",
+  "description": "Distribute allocated ERC20 tokens based on set conditions",
+  "main": "truffle-config.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "build-contracts": "sol-merger \"./contracts/*.sol\" ./build",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/chronologic/token-allocation-distributor.git"
+  },
+  "keywords": [
+    "ethereum",
+    "erc20",
+    "allocator",
+    "vesting",
+    "eac",
+    "ethereum-alarm-clock"
+  ],
+  "author": "adibas03@gmail.com",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/chronologic/token-allocation-distributor/issues"
+  },
+  "homepage": "https://github.com/chronologic/token-allocation-distributor#readme",
+  "devDependencies": {
+    "sol-merger": "^0.1.2"
+  }
+}
