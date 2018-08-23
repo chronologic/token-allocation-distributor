@@ -10,11 +10,10 @@ const newDummyVesting = (_beneficiary, _start, _cliff, _duration, _revocable) =>
   _duration,
   _revocable
 );
-const newDistributor = (_token, _stakeHoldersCount, _stakeHolders, _stakeHoldersWeights) => {
-  return WithVestingContract.new(
+const newDistributor = (_token, _stakeHoldersCount, _stakeHolders, _stakeHoldersWeights) =>
+  WithVestingContract.new(
     _token, _stakeHoldersCount, _stakeHolders, _stakeHoldersWeights
-  )
-}
+  );
 
 const makeBlockchainTime = time => Math.floor(time/1000);
 
@@ -23,7 +22,7 @@ const forceMine = async (time) => {
     jsonrpc: "2.0",
     method: "evm_increaseTime",
     params: [time],
-    id: 0x123450
+    id: 0x1a0
   });
   await web3.currentProvider.send({
     jsonrpc: "2.0",
@@ -53,6 +52,7 @@ contract('WithVestingContract', (accounts) => {
   let token;
   let vesting;
   let instance;
+  let snapshot;
   const me = accounts[0];
   const stakeHoldersCount = 1;
   const stakeHolders = [me];
@@ -66,46 +66,36 @@ contract('WithVestingContract', (accounts) => {
   before( async () => {
     snapshot = await snapShot();
 
-    await newDummyToken().then(async (_instance) => {
-      token = _instance;
-      web3 = _instance.constructor.web3
+    token = await newDummyToken();
+    web3 = token.constructor.web3;
 
-      const blocktime = (await web3.eth.getBlock('latest')).timestamp;
-      vestingConfig._start = blocktime;
+    const blocktime = (await web3.eth.getBlock('latest')).timestamp;
+    vestingConfig._start = blocktime;
 
-    }).then( async () => {
-      await newDistributor(
-        token.address,
-        stakeHoldersCount,
-        stakeHolders,
-        stakeHoldersWeights
-      ).then((_instance) => {
-        instance = _instance;
-      })
-    })
-    .then( async () => {
-      await newDummyVesting(
-        instance.address,
-        vestingConfig._start,
-        vestingConfig._cliff,
-        vestingConfig._duration,
-        false
-      ).then((_instance) => {
-        vesting = _instance;
-      })
-    })
-    .then( async() => {
-      const vestingBalance = await token.balanceOf.call(vesting.address);
-      const distributorBalance = await token.balanceOf.call(instance.address);
+    instance = await newDistributor(
+      token.address,
+      stakeHoldersCount,
+      stakeHolders,
+      stakeHoldersWeights,
+    );
 
-      console.log('Web3: ', web3.version.api ? web3.version.api : web3.version);
-      console.log('Token: ', token.address)
-      console.log('Vesting Contract: ', vesting.address)
-      console.log('TokenDistributor: ', instance.address)
+    vesting = await newDummyVesting(
+      instance.address,
+      vestingConfig._start,
+      vestingConfig._cliff,
+      vestingConfig._duration,
+    );
 
-      assert.equal(Number(vestingBalance), 0, 'Vesting contract aleady has tokens');
-      assert.equal(Number(distributorBalance), 0, 'Distributor contract contract aleady has tokens');
-    })
+    const vestingBalance = await token.balanceOf(vesting.address);
+    const distributorBalance = await token.balanceOf(instance.address);
+
+    console.log('Web3: ', web3.version.api ? web3.version.api : web3.version);
+    console.log('Token: ', token.address)
+    console.log('Vesting Contract: ', vesting.address)
+    console.log('TokenDistributor: ', instance.address)
+
+    assert.equal(Number(vestingBalance), 0, 'Vesting contract aleady has tokens');
+    assert.equal(Number(distributorBalance), 0, 'Distributor contract contract aleady has tokens');
   })
 
   describe('setVestingContract()', () => {
@@ -199,15 +189,12 @@ contract('WithVestingContract', (accounts) => {
       const releasableAmount = await vesting.releasableAmount.call(token.address);
 
       assert.isAbove( Number(releasableAmount), 0, 'Should have allocated tokens');
-      try {
-        await instance.releaseVesting( 0, vesting.address, token.address, {
-          from: me
-        });
-        const newBalance = await token.balanceOf.call(instance.address);
-        assert.deepEqual( newBalance, releasableAmount.add(balance), 'Wrong amount of tokens released');
-      } catch (e) {
-        assert.fail('Access denied');
-      }
+      
+      await instance.releaseVesting( 0, vesting.address, token.address, {
+        from: me
+      });
+      const newBalance = await token.balanceOf.call(instance.address);
+      assert.isAtLeast( Number(newBalance), Number(releasableAmount.add(balance)), 'Wrong amount of tokens released');
     })
 
     it('Should successfully release due tokens (v2)', async () => {
@@ -217,17 +204,17 @@ contract('WithVestingContract', (accounts) => {
       const releasableAmount = await vesting.releasableAmount.call(token.address);
 
       assert.isAbove( Number(releasableAmount), 0, 'Should have allocated tokens');
-      try {
-        await instance.release({
-          from: accounts[2]
-        });
-        const newBalance = await token.balanceOf.call(instance.address);
-        assert.deepEqual( newBalance, releasableAmount.add(balance), 'Wrong amount of tokens released');
-      } catch (e) {
-        console.error(e)
-        assert.fail('Access denied');
-      }
+
+      await instance.release({
+        from: accounts[2]
+      });
+      const newBalance = await token.balanceOf.call(instance.address);
+
+      assert.isAtLeast( Number(newBalance), Number(releasableAmount.add(balance)), 'Wrong amount of tokens released');
     })
 
   })
+
+  after( async () => await revert(snapshot))
+
 })
