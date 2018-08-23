@@ -67,6 +67,8 @@ contract('WithVestingContract', (accounts) => {
     snapshot = await snapShot();
 
     token = await newDummyToken();
+    assert(token.address, "Dummy Token was not deployed or does not have an address.");
+
     web3 = token.constructor.web3;
 
     const blocktime = (await web3.eth.getBlock('latest')).timestamp;
@@ -78,6 +80,7 @@ contract('WithVestingContract', (accounts) => {
       stakeHolders,
       stakeHoldersWeights,
     );
+    assert(instance.address, "Distributor was not deployed or does not have an address.");
 
     vesting = await newDummyVesting(
       instance.address,
@@ -85,6 +88,7 @@ contract('WithVestingContract', (accounts) => {
       vestingConfig._cliff,
       vestingConfig._duration,
     );
+    assert(vesting.address, "Vesting contract was deployed and has an address.");
 
     const vestingBalance = await token.balanceOf(vesting.address);
     const distributorBalance = await token.balanceOf(instance.address);
