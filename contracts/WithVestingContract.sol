@@ -4,7 +4,7 @@ https://github.com/OpenZeppelin/openzeppelin-solidity/blob/master/contracts/toke
 */
 pragma solidity ^0.4.24;
 
-import "./IvestingContract.sol";
+import "./interfaces/IVestingContract.sol";
 import "./WeightedTokenDistributor.sol";
 
 contract WithVestingContract is WeightedTokenDistributor {
@@ -43,7 +43,7 @@ contract WithVestingContract is WeightedTokenDistributor {
         if (_version == vestingContractVersion.v1) {
             return _releaseVesting (_version, _vestingContract);
         } else if (_version == vestingContractVersion.v2){
-            IvestingContract(_vestingContract).release(_targetToken);
+            IVestingContract(_vestingContract).release(_targetToken);
             return true;
         }
         return false;
@@ -53,7 +53,7 @@ contract WithVestingContract is WeightedTokenDistributor {
         if (_version != vestingContractVersion.v1) {
             revert('You need to pass in the additional argument(s)');
         }
-        IvestingContract(_vestingContract).release();
+        IVestingContract(_vestingContract).release();
         return true;
     }
 
