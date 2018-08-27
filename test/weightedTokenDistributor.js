@@ -170,7 +170,7 @@ contract("Weighted Token Distributor", (accounts) => {
             50,
         ];
 
-        await weightedTokenDistributor.distribute(dummyToken.address);
+        await weightedTokenDistributor.distribute();
 
         await initialStakeholders.map(async (stakeholder, idx) => {
             assert.strictEqual(

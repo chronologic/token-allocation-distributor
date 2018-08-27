@@ -45,7 +45,7 @@ contract TokenDistributor is TokenHandler {
         return true;
     }
 
-    function distribute (address _token) public returns (bool) {
+    function _distribute (address _token) internal returns (bool) {
         uint256 balance = getTokenBalance(_token);
         uint256 perStakeHolder = getPortion(balance);
 
@@ -67,7 +67,12 @@ contract TokenDistributor is TokenHandler {
         }
     }
 
+    function distribute () public returns (bool) {
+        require(targetToken != 0x0);
+        return _distribute(targetToken);
+    }
+
     function () public {
-        distribute(targetToken);
+        distribute();
     }
 }

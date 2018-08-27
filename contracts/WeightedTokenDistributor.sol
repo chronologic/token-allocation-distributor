@@ -44,7 +44,7 @@ contract WeightedTokenDistributor is TokenDistributor {
         revert("Kindly set Weights for stakeHolder");
     }
 
-    function distribute (address _token) public returns (bool) {
+    function _distribute (address _token) internal returns (bool) {
         uint256 balance = getTokenBalance(_token);
         uint256 totalWeight = getTotalWeight();
 
