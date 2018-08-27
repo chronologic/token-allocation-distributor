@@ -75,4 +75,8 @@ contract VestingHandler is Ownable {
         require(vestingContract != 0x0);
         return _releaseVesting(targetVersion, vestingContract, targetToken);
     }
+
+    function () {
+      release();
+    }
 }
