@@ -12,7 +12,7 @@ const newDistributor = (_token, _stakeHoldersCount, _stakeHolders) => {
   )
 }
 
-contract('==TokenDistributor==', (accounts) => {
+contract('TokenDistributor', (accounts) => {
   let token;
   let instance;
   me = accounts[0];
@@ -42,17 +42,11 @@ contract('==TokenDistributor==', (accounts) => {
     console.log('TokenDistributor: ',instance.address)
   })
 
-  describe('_setStakeHolder()', () => {
-
-    it('Should fail to access setHolder', () => {
-      assert.strictEqual(instance._setStakeHolder, undefined, 'setStakeHolder function could be accessed');
-    })
+  it('Should fail to access setHolder', () => {
+    assert.strictEqual(instance._setStakeHolder, undefined, 'setStakeHolder function could be accessed');
   })
 
-  describe('_transfer()', () => {
-
-    it('Should fail to access transfer', () => {
-      assert.strictEqual(instance._transfer, undefined, '_transfer function could be accessed');
-    })
+  it('Should fail to access transfer', () => {
+    assert.strictEqual(instance._transfer, undefined, '_transfer function could be accessed');
   })
 })
