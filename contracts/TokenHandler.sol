@@ -4,11 +4,8 @@ import "../installed_contracts/zeppelin-solidity/contracts/ownership/Ownable.sol
 import "../installed_contracts/zeppelin-solidity/contracts/token/ERC20/ERC20Basic.sol";
 
 contract TokenHandler is Ownable {
-    using SafeMath for uint;
 
     address public targetToken;
-    address[] public stakeHolders;
-    uint256 public maxStakeHolders;
 
     constructor ( address _targetToken) public Ownable() {
         setTargetToken(_targetToken);
