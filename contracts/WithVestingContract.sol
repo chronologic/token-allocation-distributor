@@ -13,7 +13,7 @@ import "./WeightedTokenDistributor.sol";
 contract WithVestingContract is WeightedTokenDistributor, VestingHandler {
 
     constructor ( address _targetToken, uint256 _totalStakeHolders, address[] _stakeHolders, uint256[] _weights, vestingContractVersion _targetVersion, address _vestingContract) public
-    WeightedTokenDistributor(_targetToken, _totalStakeHolders, _stakeHolders, _weights)
+    WeightedTokenDistributor(0, _totalStakeHolders, _stakeHolders, _weights) //Do not pass targetToken as that would be set in VestingHandler
     VestingHandler(_targetVersion, _vestingContract, _targetToken)
     {}
 

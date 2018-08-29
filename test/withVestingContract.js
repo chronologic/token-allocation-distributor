@@ -10,9 +10,9 @@ const newDummyVesting = (_beneficiary, _start, _cliff, _duration, _revocable) =>
   _duration,
   _revocable
 );
-const newDistributor = (_token, _stakeHoldersCount, _stakeHolders, _stakeHoldersWeights) =>
+const newDistributor = (_token, _stakeHoldersCount, _stakeHolders, _stakeHoldersWeights, _version, _vestingContract) =>
   WithVestingContract.new(
-    _token, _stakeHoldersCount, _stakeHolders, _stakeHoldersWeights
+    _token, _stakeHoldersCount, _stakeHolders, _stakeHoldersWeights, _version, _vestingContract
   );
 
 const makeBlockchainTime = time => Math.floor(time/1000);
@@ -59,6 +59,8 @@ contract('WithVestingContract', (accounts) => {
       stakeHoldersCount,
       stakeHolders,
       stakeHoldersWeights,
+      0,
+      0
     );
     assert(instance.address, "Distributor was not deployed or does not have an address.");
 

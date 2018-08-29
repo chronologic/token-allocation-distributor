@@ -76,7 +76,7 @@ contract VestingHandler is Ownable {
         return _releaseVesting(targetVersion, vestingContract, targetToken);
     }
 
-    function () {
+    function () public {
       release();
     }
 }
