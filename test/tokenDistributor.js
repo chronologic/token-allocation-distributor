@@ -1,10 +1,6 @@
 const DummyToken = artifacts.require("./DummyToken.sol");
 const TokenDistributor = artifacts.require("./TokenDistributor.sol");
-const deployConfig = {
 
-}
-
-let me;
 const newDummy = () => DummyToken.new();
 const newDistributor = (_token, _stakeHoldersCount, _stakeHolders) => {
   return TokenDistributor.new(
@@ -15,7 +11,7 @@ const newDistributor = (_token, _stakeHoldersCount, _stakeHolders) => {
 contract('TokenDistributor', (accounts) => {
   let token;
   let instance;
-  me = accounts[0];
+  const me = accounts[0];
   const stakeHoldersCount = Math.floor((accounts.length-3) * Math.random()) + 1;
   const stakeHolders = accounts.filter( (account, index) => {
     return index > 0 && index < (stakeHoldersCount+1);

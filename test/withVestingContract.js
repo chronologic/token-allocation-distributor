@@ -64,7 +64,7 @@ contract('WithVestingContract', (accounts) => {
   }
 
   before( async () => {
-    snapshot = await snapShot();
+    // snapshot = await snapShot();
 
     token = await newDummyToken();
     assert(token.address, "Dummy Token was not deployed or does not have an address.");
@@ -212,6 +212,6 @@ contract('WithVestingContract', (accounts) => {
     assert.isAtLeast( Number(newBalance), Number(releasableAmount.add(balance)), 'Wrong amount of tokens released');
   })
 
-  after( async () => await revert(snapshot))
+  // after( async () => await revert(snapshot))
 
 })
