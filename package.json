@@ -8,7 +8,7 @@
   },
   "scripts": {
     "build-contracts": "sol-merger \"./contracts/*.sol\" ./build",
-    "test": "truffle test"
+    "test": "truffle test test/*Distributor* && truffle test test/withVestingContract.js"
   },
   "repository": {
     "type": "git",

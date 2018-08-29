@@ -31,23 +31,6 @@ const forceMine = async (time) => {
   });
 }
 
-const snapShot = async () => {
-  return await web3.currentProvider.send({
-    jsonrpc: "2.0",
-    method: "evm_snapshot",
-    id: 0x15f0
-  });
-}
-
-const revert = async (snapshot) => {
-  return await web3.currentProvider.send({
-    jsonrpc: "2.0",
-    method: "evm_revert",
-    param: snapshot,
-    id: 0x12450c
-  });
-}
-
 contract('WithVestingContract', (accounts) => {
   let token;
   let vesting;
@@ -64,11 +47,8 @@ contract('WithVestingContract', (accounts) => {
   }
 
   before( async () => {
-    // snapshot = await snapShot();
-
     token = await newDummyToken();
     assert(token.address, "Dummy Token was not deployed or does not have an address.");
-
     web3 = token.constructor.web3;
 
     const blocktime = (await web3.eth.getBlock('latest')).timestamp;
@@ -93,7 +73,6 @@ contract('WithVestingContract', (accounts) => {
     const vestingBalance = await token.balanceOf(vesting.address);
     const distributorBalance = await token.balanceOf(instance.address);
 
-    console.log('Web3: ', web3.version.api ? web3.version.api : web3.version);
     console.log('Token: ', token.address)
     console.log('Vesting Contract: ', vesting.address)
     console.log('TokenDistributor: ', instance.address)
@@ -211,7 +190,4 @@ contract('WithVestingContract', (accounts) => {
 
     assert.isAtLeast( Number(newBalance), Number(releasableAmount.add(balance)), 'Wrong amount of tokens released');
   })
-
-  // after( async () => await revert(snapshot))
-
 })
