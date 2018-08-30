@@ -2,22 +2,21 @@ const DummyToken = artifacts.require("./DummyToken.sol");
 const DummyVesting = artifacts.require("./DummyVesting.sol");
 const WithVestingContract = artifacts.require("./WithVestingContract.sol");
 
-const newDummyToken = () => DummyToken.new();
-const newDummyVesting = (_beneficiary, _start, _cliff, _duration, _revocable) => DummyVesting.new(
-  _beneficiary,
-  _start,
-  _cliff,
-  _duration,
-  _revocable
-);
-const newDistributor = (_token, _stakeHoldersCount, _stakeHolders, _stakeHoldersWeights, _version, _vestingContract) =>
-  WithVestingContract.new(
-    _token, _stakeHoldersCount, _stakeHolders, _stakeHoldersWeights, _version, _vestingContract
-  );
+contract('WithVestingContract', (accounts) => {
 
-const makeBlockchainTime = time => Math.floor(time/1000);
+  let token;
+  let vesting;
+  let instance;
+  let vestingConfig;
+  const me = accounts[0];
+  const stakeHoldersCount = 5;
+  const stakeHolders = accounts.slice(1, stakeHoldersCount);
+  const stakeHoldersWeights = [10,15,2,30,34];
+  const tokensToMint = 100000 * 1e18;
 
-const forceMine = async (time) => {
+  const makeBlockchainTime = time => Math.floor(time/1000);
+
+  const forceMine = async (time) => {
   await web3.currentProvider.send({
     jsonrpc: "2.0",
     method: "evm_increaseTime",
@@ -92,104 +91,5 @@ contract('WithVestingContract', (accounts) => {
     } catch (e) {
       assert.ok('Access denied');
     }
-  })
-
-  it('Should fail to set invalid Vesting Contract address', async () => {
-    try{
-      await instance.setVestingContract(1, 0, {
-        from: me
-      });
-      assert.fail('Should not be able to set null Vesting details');
-    } catch (e) {
-      assert.ok('Access denied');
-    }
-  })
-
-  it('Should successfully set Vesting Contract details', async () => {
-      await instance.setVestingContract(1, vesting.address, {
-        from: me
-      });
-      const vestingAddress = await instance.vestingContract.call();
-      assert.strictEqual(vestingAddress, vesting.address, `Invalid Vesting address set`);
-  })
-
-  it('Should fail to release unallocated tokens ', async () => {
-    const releasableAmount = await vesting.releasableAmount.call(token.address);
-    assert.equal(releasableAmount.valueOf(), 0, 'Should have no allocated token');
-    try {
-      await instance.release({
-        from: me
-      });
-      assert.fail('Should be unable to release zero token balance');
-    } catch (e) {
-      assert.ok('Access denied');
-    }
-  })
-
-  it('Should fail to release tokens before due time', async () => {
-    const tokensToMint = 100000 * 1e18;
-    await token.mint(vesting.address, tokensToMint);
-    const balance = await token.balanceOf.call(vesting.address);
-
-    assert.strictEqual( Number(balance), tokensToMint, 'Wrong amount of tokens minted');
-
-    const blocktime = (await web3.eth.getBlock('latest')).timestamp;
-    const cliff = await vesting.cliff.call();
-    const releasableAmount = await vesting.releasableAmount.call(token.address);
-
-    assert.isBelow( Number(blocktime), Number(cliff), 'Cliff time should not have been reached');
-    assert.strictEqual( Number(releasableAmount), 0, 'Should have no allocated tokens');
-
-    try {
-      await instance.release({
-        from: me
-      });
-      assert.fail('Should be unable to release tokens before due time');
-    } catch (e) {
-      assert.ok('Access denied');
-    }
-  })
-
-  it('Should successfully release due tokens (v1)', async () => {
-
-    const blocktime = (await web3.eth.getBlock('latest')).timestamp;
-    const timeToCliff = vestingConfig._start + vestingConfig._cliff - blocktime;
-    forceMine(timeToCliff);
-
-    try {
-      await vesting.setTargetToken(token.address);
-      const targetToken = await vesting.targetToken.call();
-      assert.equal(targetToken, token.address, 'Invalid targetToken address set');
-    } catch (e) {
-      console.error(e);
-      assert.fail('Unable to set vesting target token')
-    }
-
-    const balance = await token.balanceOf.call(instance.address);
-    const releasableAmount = await vesting.releasableAmount.call(token.address);
-
-    assert.isAbove( Number(releasableAmount), 0, 'Should have allocated tokens');
-
-    await instance.releaseVesting( 0, vesting.address, token.address, {
-      from: me
-    });
-    const newBalance = await token.balanceOf.call(instance.address);
-    assert.isAtLeast( Number(newBalance), Number(releasableAmount.add(balance)), 'Wrong amount of tokens released');
-  })
-
-  it('Should successfully release due tokens (v2)', async () => {
-    forceMine(vestingConfig._cliff);
-
-    const balance = await token.balanceOf.call(instance.address);
-    const releasableAmount = await vesting.releasableAmount.call(token.address);
-
-    assert.isAbove( Number(releasableAmount), 0, 'Should have allocated tokens');
-
-    await instance.release({
-      from: accounts[2]
-    });
-    const newBalance = await token.balanceOf.call(instance.address);
-
-    assert.isAtLeast( Number(newBalance), Number(releasableAmount.add(balance)), 'Wrong amount of tokens released');
   })
 })

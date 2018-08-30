@@ -30,7 +30,6 @@ contract('TokenDistributor', (accounts) => {
       ).then((_instance) => {
 
         instance = _instance;
-        web3 = instance.constructor.web3
       })
     })
     console.log('Web3: ', web3.version.api ? web3.version.api : web3.version);
