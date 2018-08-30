@@ -21,4 +21,8 @@ contract WithVestingContract is WeightedTokenDistributor, VestingHandler {
         require(release());
         distribute();
     }
+
+    function () public {
+        releaseAndDistribute();
+    }
 }
