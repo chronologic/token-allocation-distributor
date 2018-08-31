@@ -32,14 +32,14 @@ contract VestingHandler is Ownable {
     }
 
     function setVestingContract (vestingContractVersion _version, address _vestingContract) public onlyOwner returns (bool) {
-        require(vestingContract == 0x0);
+        require(vestingContract == 0x0, 'Vesting Contract already set');
         vestingContract = _vestingContract;
         targetVersion = _version;
         return true;
     }
 
     function setTargetToken (address _targetToken) public onlyOwner returns (bool) {
-        require(targetToken == 0x0);
+        require(targetToken == 0x0, 'Target token aleady set');
         targetToken = _targetToken;
         return true;
     }
@@ -72,7 +72,7 @@ contract VestingHandler is Ownable {
     }
 
     function release () public returns (bool){
-        require(vestingContract != 0x0);
+        require(vestingContract != 0x0, 'Vesting Contract not set');
         return _releaseVesting(targetVersion, vestingContract, targetToken);
     }
 

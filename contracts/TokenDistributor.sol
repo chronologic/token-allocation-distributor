@@ -68,7 +68,7 @@ contract TokenDistributor is TokenHandler {
     }
 
     function distribute () public returns (bool) {
-        require(targetToken != 0x0);
+        require(targetToken != 0x0, 'Target token not set');
         return _distribute(targetToken);
     }
 
