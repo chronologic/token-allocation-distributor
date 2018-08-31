@@ -26,7 +26,7 @@ contract('TokenDistributor', (accounts) => {
       await newDistributor(
         token.address,
         stakeHoldersCount,
-         stakeHolders
+        stakeHolders
       ).then((_instance) => {
 
         instance = _instance;

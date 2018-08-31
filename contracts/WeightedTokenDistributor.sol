@@ -30,6 +30,12 @@ contract WeightedTokenDistributor is TokenDistributor {
         return (_total.mul(weight)).div(_totalWeight);
     }
 
+    function getPortion (uint256 _total, address _stakeHolder) public view returns (uint256) {
+        uint256 totalWeight = getTotalWeight();
+        uint256 weight = stakeHoldersWeight[_stakeHolder];
+        return (_total.mul(weight)).div(totalWeight);
+    }
+
     function getPortion (uint256 _total) public view returns (uint256) {
         revert("Kindly indicate stakeHolder and totalWeight");
     }

@@ -127,7 +127,8 @@ contract("Weighted Token Distributor", (accounts) => {
     })
 
     it('Correctly calculates the portion according to the weight passed', async () => {
-        const returnedPortion = await weightedTokenDistributor.getPortion(100, 10, initialStakeholders[0]);
+      //Use weightedTokenDistributor.contract to access overloaded functions
+        const returnedPortion = await weightedTokenDistributor.contract.getPortion['uint256,uint256,address'](100, 10, initialStakeholders[0]);
 
         const expectedPortion = 100 * 3 / 10;
 
