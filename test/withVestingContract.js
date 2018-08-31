@@ -17,43 +17,30 @@ contract('WithVestingContract', (accounts) => {
   const makeBlockchainTime = time => Math.floor(time/1000);
 
   const forceMine = async (time) => {
-  await web3.currentProvider.send({
-    jsonrpc: "2.0",
-    method: "evm_increaseTime",
-    params: [time],
-    id: 0x1a0
-  });
-  await web3.currentProvider.send({
-    jsonrpc: "2.0",
-    method: "evm_mine",
-    id: 0x12345
-  });
-}
-
-contract('WithVestingContract', (accounts) => {
-  let token;
-  let vesting;
-  let instance;
-  let snapshot;
-  const me = accounts[0];
-  const stakeHoldersCount = 1;
-  const stakeHolders = [me];
-  const stakeHoldersWeights = [1];
-
-  const vestingConfig = {
-      _cliff: makeBlockchainTime(900000),
-      _duration: makeBlockchainTime(24000000)
+    await web3.currentProvider.send({
+      jsonrpc: "2.0",
+      method: "evm_increaseTime",
+      params: [time],
+      id: 0x1a0
+    });
+    await web3.currentProvider.send({
+      jsonrpc: "2.0",
+      method: "evm_mine",
+      id: 0x12345
+    });
   }
 
   before( async () => {
-    token = await newDummyToken();
+    token = await DummyToken.new();
     assert(token.address, "Dummy Token was not deployed or does not have an address.");
-    web3 = token.constructor.web3;
 
-    const blocktime = (await web3.eth.getBlock('latest')).timestamp;
-    vestingConfig._start = blocktime;
+    vestingConfig = {
+        _cliff: makeBlockchainTime(900000),
+        _duration: makeBlockchainTime(24000000),
+        _start: (await web3.eth.getBlock('latest')).timestamp
+    }
 
-    instance = await newDistributor(
+    instance = await WithVestingContract.new(
       token.address,
       stakeHoldersCount,
       stakeHolders,
@@ -62,34 +49,71 @@ contract('WithVestingContract', (accounts) => {
       0
     );
     assert(instance.address, "Distributor was not deployed or does not have an address.");
+    const instanceTargetToken = await instance.targetToken.call();
+    assert.strictEqual(instanceTargetToken, token.address, "Invalid targetToken address set for Distributor.");
 
-    vesting = await newDummyVesting(
+    vesting = await DummyVesting.new(
       instance.address,
       vestingConfig._start,
       vestingConfig._cliff,
       vestingConfig._duration,
+      true
     );
     assert(vesting.address, "Vesting contract was deployed and has an address.");
 
-    const vestingBalance = await token.balanceOf(vesting.address);
-    const distributorBalance = await token.balanceOf(instance.address);
+    await vesting.setTargetToken(token.address);
+    const targetToken = await vesting.targetToken.call();
+    assert.strictEqual(targetToken, token.address, "Invalid targetToken address set for Vesting contract.");
 
     console.log('Token: ', token.address)
     console.log('Vesting Contract: ', vesting.address)
     console.log('TokenDistributor: ', instance.address)
 
-    assert.equal(Number(vestingBalance), 0, 'Vesting contract aleady has tokens');
-    assert.equal(Number(distributorBalance), 0, 'Distributor contract contract aleady has tokens');
+    await instance.setVestingContract(1, vesting.address, {
+      from: me
+    });
+    const vestingAddress = await instance.vestingContract.call();
+    assert.strictEqual(vestingAddress, vesting.address, `Invalid Vesting address set`);
+
+    await token.mint(vesting.address, tokensToMint);
+    const balance = await token.balanceOf.call(vesting.address);
+    assert.strictEqual( Number(balance), tokensToMint, 'Wrong amount of tokens minted');
   })
 
-  it('Should fail to set Vesting Contract from Random address', async () => {
+  it('successfully releases and distributes tokens from Random address', async () => {
+    const expectedBeforeBalances = [0,0,0,0];
+    const beforeBalances = [];
+
+    const blocktime = (await web3.eth.getBlock('latest')).timestamp;
+    const timeToCliff = vestingConfig._start + vestingConfig._cliff - blocktime;
+    forceMine(timeToCliff);
+
+    const balances = (result) => {
+      return stakeHolders.map( async stakeHolder => {
+        result.push(Number(await token.balanceOf.call(stakeHolder)))
+      })
+    }
+    await Promise.all(balances(beforeBalances));
+    assert.deepEqual(beforeBalances, expectedBeforeBalances, 'Address should have no balances before distribution')
+
+    const releasableAmount = await vesting.releasableAmount.call(token.address);
+    assert.isAbove( Number(releasableAmount), 0, 'Should have allocated tokens');
+
+    const expectedAfterBalancesPromises = stakeHolders.map( async stakeHolder => {
+      return Number(await instance.getPortion.call(releasableAmount.toFixed(), stakeHolder));
+    })
+    const expectedAfterBalances = await Promise.all(expectedAfterBalancesPromises);
+
     try{
-      await instance.setVestingContract(1, vesting.address, {
-        from: accounts[1]
+      await instance.releaseAndDistribute({
+        from: me
       });
-      assert.fail('Random address should not be able to set Vesting details');
+      const afterBalances = [];
+      await Promise.all(balances(afterBalances));
+      assert.deepEqual( afterBalances, expectedAfterBalances, 'Wrong number of Tokens distributed')
     } catch (e) {
-      assert.ok('Access denied');
+      console.log(e)
+      assert.fail(true, e);
     }
   })
 })
