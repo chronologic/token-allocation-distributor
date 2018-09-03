@@ -101,14 +101,14 @@ contract('TokenDistributor', (accounts) => {
   })
 
   it("Correctly detects isDistributionDue", async () => {
-    const falseisDistributionDue = await tokenDistributor.isDistributionDue.call();
-    assert.false(falseisDistributionDue.toNumber(), 0, 'TokenHandler should have no tokens');
+    const falseisDistributionDue = await tokenDistributor.contract.isDistributionDue[''].call();
+    assert.isFalse(falseisDistributionDue, 'TokenHandler should have no tokens');
 
     const tokensToMint = Math.floor(10 ** (100 * Math.random()));
     await token.mint(tokenDistributor.address, tokensToMint);
 
-    const isDistributionDue = await tokenDistributor.isDistributionDue.call();
-    assert.true(isDistributionDue, 'Failed to detect isDistributionDue');
+    const isDistributionDue = await tokenDistributor.contract.isDistributionDue[''].call();
+    assert.isTrue(isDistributionDue, 'Failed to detect isDistributionDue');
   })
-  
+
 })
