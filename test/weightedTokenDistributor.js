@@ -29,9 +29,8 @@ contract("Weighted Token Distributor", (accounts) => {
         );
 
         assert(weightedTokenDistributor.address, "Weighted Token Distributor was deployed and has an address.");
-    })
 
-    it("Correctly sets the targetToken", async () => {
+
         await weightedTokenDistributor.setTargetToken(dummyToken.address,
           {
               from: default_account,
@@ -44,35 +43,6 @@ contract("Weighted Token Distributor", (accounts) => {
             expectedToken,
             "The expected token was returned from the Weighted Token Distributor."
         );
-    })
-
-    it("Correctly returns the targetToken", async () => {
-        const returnedToken = await weightedTokenDistributor.targetToken();
-
-        const expectedToken = dummyToken.address;
-        assert.strictEqual(
-            returnedToken,
-            expectedToken,
-            "The expected token was returned from the Weighted Token Distributor."
-        );
-    })
-
-    it("Fails to update the targetToken", async () => {
-        try {
-          await weightedTokenDistributor.setTargetToken(accounts[5],{
-              from: default_account,
-          });
-
-          const returnedToken = await weightedTokenDistributor.targetToken();
-          const unExpectedToken = accounts[5];
-          assert.notStrictEqual(
-              returnedToken,
-              unExpectedToken,
-              "The expected token was not returned from the Weighted Token Distributor."
-          );
-        } catch (e) {
-          assert.exists(e)
-        }
     })
 
     it('Correctly returns the stakeHolders array', async () => {

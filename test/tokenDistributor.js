@@ -20,10 +20,10 @@ contract('TokenDistributor', (accounts) => {
   console.log('StakeHolders: ', stakeHolders)
 
   before(async () => {
-    await newDummy().then((_instance) => {
+    await DummyToken.new().then((_instance) => {
       token = _instance;
     }).then( async () => {
-      await newDistributor(
+      await TokenDistributor.new(
         token.address,
         stakeHoldersCount,
         stakeHolders
