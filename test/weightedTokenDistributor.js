@@ -62,7 +62,7 @@ contract("Weighted Token Distributor", (accounts) => {
       try {
         await weightedTokenDistributor.contract.getPortion['uint256'](3);
         assert.fail('Fethced portion without providing weight');
-      } catch {
+      } catch (e) {
         assert.ok('Requires weight to getPortion');
       }
     })
