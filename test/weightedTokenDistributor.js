@@ -45,41 +45,6 @@ contract("Weighted Token Distributor", (accounts) => {
         );
     })
 
-    it('Correctly returns the stakeHolders array', async () => {
-        const returnedStakeHolders = await weightedTokenDistributor.stakeHolders(2);
-
-        const expectedStakeHolders = initialStakeholders[2];
-
-        assert.strictEqual(
-            returnedStakeHolders,
-            expectedStakeHolders,
-            "The expected stakeHolders array was returned from the Weighted Token Distribution."
-        );
-    })
-
-    it("Correctly returns the maxStakeHolders", async () => {
-        const returnedMaxStakeHolders = await weightedTokenDistributor.maxStakeHolders();
-
-        const expectedMaxStakeHolders = totalStakeholders;
-        assert.strictEqual(
-            returnedMaxStakeHolders.toNumber(),
-            expectedMaxStakeHolders,
-            "The expected maxStakeHolders was returned from the Weighted Token Distributor."
-        );
-    })
-
-    it('Correctly counts stakeHolders', async () => {
-        const returnedCount = await weightedTokenDistributor.countStakeHolders();
-
-        const expectedCount = initialStakeholderCount;
-
-        assert.strictEqual(
-            returnedCount.toNumber(),
-            expectedCount,
-            "The expected count was returned from the Weighted Token Distributor."
-        );
-    })
-
     it('Correctly calculates the weight', async () => {
         const returnedWeight = await weightedTokenDistributor.getTotalWeight();
 
@@ -93,7 +58,13 @@ contract("Weighted Token Distributor", (accounts) => {
     })
 
     it('Reverts on using `getPortion` without a weight param', async () => {
-        // assert.throws(await weightedTokenDistributor.getPortion(3));
+      //Use weightedTokenDistributor.contract to access overloaded functions
+      try {
+        await weightedTokenDistributor.contract.getPortion['uint256'](3);
+        assert.fail('Fethced portion without providing weight')
+      } catch {
+        assert.ok('Requires weight to getPortion');
+      }
     })
 
     it('Correctly calculates the portion according to the weight passed', async () => {

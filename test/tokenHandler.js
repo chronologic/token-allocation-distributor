@@ -19,7 +19,18 @@ contract('TokenHandler', (accounts) => {
   })
 
   it('Should fail to access transfer', () => {
-    assert.strictEqual(TokenHandler._transfer, undefined, '_transfer function could be accessed');
+    assert.strictEqual(tokenHandler._transfer, undefined, '_transfer function could be accessed');
+  })
+
+  it('correctly returns token Balance from random address', async () => {
+    const returnedEmptyBalance = await tokenHandler.getTokenBalance.call(token.address);
+    assert.equal(returnedEmptyBalance.toNumber(), 0, 'TokenHandler should have no tokens');
+
+    const tokensToMint = Math.floor(10 ** (100 * Math.random()));
+    await token.mint(tokenHandler.address, tokensToMint);
+
+    const returnedBalance = await tokenHandler.getTokenBalance.call(token.address);
+    assert.equal(returnedBalance.toNumber(), tokensToMint, 'Wrong balance returned from TokenHandler');
   })
 
   it('Should fail to set targetToken from random address', async () => {
@@ -29,7 +40,7 @@ contract('TokenHandler', (accounts) => {
       })
       assert.fail('Set targetToken without permission');
     } catch (e) {
-      assert.isOk(e);
+      assert.exists(e);
     }
   })
 
@@ -44,7 +55,7 @@ contract('TokenHandler', (accounts) => {
       assert.strictEqual(
           returnedToken,
           expectedToken,
-          "The expected token was returned from the Weighted Token Distributor."
+          "The expected token was returned from the Token Handler."
       );
   })
 
@@ -55,7 +66,7 @@ contract('TokenHandler', (accounts) => {
       assert.strictEqual(
           returnedToken,
           expectedToken,
-          "The expected token was returned from the Weighted Token Distributor."
+          "The expected token was returned from the Token Handler."
       );
   })
 
@@ -70,7 +81,7 @@ contract('TokenHandler', (accounts) => {
         assert.notStrictEqual(
             returnedToken,
             unExpectedToken,
-            "The expected token was not returned from the Weighted Token Distributor."
+            "The expected token was not returned from the Token Handler."
         );
       } catch (e) {
         assert.exists(e)
