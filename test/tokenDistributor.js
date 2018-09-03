@@ -111,4 +111,21 @@ contract('TokenDistributor', (accounts) => {
     assert.isTrue(isDistributionDue, 'Failed to detect isDistributionDue');
   })
 
+  it("Correctly distributes tokens", async () => {
+    const balance = await tokenDistributor.getTokenBalance.call(token.address);
+    assert.isAbove(balance.toNumber(), 0, 'Token Distributor should have allocated tokens');
+
+    const portion = await tokenDistributor.getPortion.call(balance.toFixed());
+    const expectedBalance = stakeHolders.map( () => true );
+
+    await tokenDistributor.distribute();
+    const returnedBalance = await Promise.all(stakeHolders.map( async (stakeHolder) => (await token.balanceOf(stakeHolder)).toFixed() === portion.toFixed() ));
+
+    assert.deepEqual(
+        returnedBalance,
+        expectedBalance,
+        "The expected tokens were not distriuted by the Token Distributor."
+    );
+  })
+
 })
