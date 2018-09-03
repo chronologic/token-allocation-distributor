@@ -110,4 +110,5 @@ contract('TokenDistributor', (accounts) => {
     const isDistributionDue = await tokenDistributor.isDistributionDue.call();
     assert.true(isDistributionDue, 'Failed to detect isDistributionDue');
   })
+  
 })
