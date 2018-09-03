@@ -61,7 +61,7 @@ contract("Weighted Token Distributor", (accounts) => {
       //Use weightedTokenDistributor.contract to access overloaded functions
       try {
         await weightedTokenDistributor.contract.getPortion['uint256'](3);
-        assert.fail('Fethced portion without providing weight')
+        assert.fail('Fethced portion without providing weight');
       } catch {
         assert.ok('Requires weight to getPortion');
       }
