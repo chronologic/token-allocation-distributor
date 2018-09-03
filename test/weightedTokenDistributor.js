@@ -96,8 +96,7 @@ contract("Weighted Token Distributor", (accounts) => {
             "Created 100 dummyTokens to Weighted Token Distributor."
         );
 
-        // Check the balances of the stakeHolders and assert they === 0
-        // before the transfers take place.
+        // Check the balances of the stakeHolders and assert they === 0, before the transfers take place.
         await initialStakeholders.map(async (stakeholder) => {
             assert.strictEqual(
                 (await dummyToken.balanceOf(stakeholder)).toNumber(),
