@@ -28,7 +28,7 @@ contract TokenDistributor is TokenHandler {
     }
 
     function isDistributionDue () public view returns (bool) {
-        return getTokenBalance(targetToken) > 1;
+        return isDistributionDue(targetToken);
     }
 
     function countStakeHolders () public view returns (uint256) {

@@ -13,12 +13,14 @@ import "./WeightedTokenDistributor.sol";
 contract WithVestingContract is WeightedTokenDistributor, VestingHandler {
 
     constructor ( address _targetToken, uint256 _totalStakeHolders, address[] _stakeHolders, uint256[] _weights, vestingContractVersion _targetVersion, address _vestingContract) public
-    WeightedTokenDistributor(0, _totalStakeHolders, _stakeHolders, _weights) //Do not pass targetToken as that would be set in VestingHandler
-    VestingHandler(_targetVersion, _vestingContract, _targetToken)
-    {}
+    WeightedTokenDistributor(0, _totalStakeHolders, _stakeHolders, _weights) //Do not pass targetToken
+    VestingHandler(_targetVersion, _vestingContract, 0) //Do not pass targetToken
+    {
+      setTargetToken(_targetToken);
+    }
 
     function releaseAndDistribute () public {
-        require(release());
+        require(release(), 'Failed to release tokens from vesting contract');
         distribute();
     }
 

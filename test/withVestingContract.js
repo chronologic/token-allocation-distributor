@@ -104,16 +104,11 @@ contract('WithVestingContract', (accounts) => {
     })
     const expectedAfterBalances = await Promise.all(expectedAfterBalancesPromises);
 
-    try{
-      await instance.releaseAndDistribute({
-        from: me
-      });
-      const afterBalances = [];
-      await Promise.all(balances(afterBalances));
-      assert.deepEqual( afterBalances, expectedAfterBalances, 'Wrong number of Tokens distributed')
-    } catch (e) {
-      console.log(e)
-      assert.fail(true, e);
-    }
+    await instance.releaseAndDistribute({
+      from: me
+    });
+    const afterBalances = [];
+    await Promise.all(balances(afterBalances));
+    assert.deepEqual( afterBalances, expectedAfterBalances, 'Wrong number of Tokens distributed')
   })
 })
