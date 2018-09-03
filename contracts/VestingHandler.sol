@@ -5,9 +5,9 @@ https://github.com/OpenZeppelin/openzeppelin-solidity/blob/master/contracts/toke
 pragma solidity ^0.4.24;
 
 import "./interfaces/IVestingContract.sol";
-import "../installed_contracts/zeppelin-solidity/contracts/ownership/Ownable.sol";
+import "./TokenHandler.sol";
 
-contract VestingHandler is Ownable {
+contract VestingHandler is TokenHandler {
 
     /**
     *   Allows releasing of tokens from vesting contracts
@@ -22,25 +22,18 @@ contract VestingHandler is Ownable {
 
     enum vestingContractVersion { v1, v2 }
 
-    address public targetToken;
     address public vestingContract;
     vestingContractVersion public targetVersion;
 
-    constructor ( vestingContractVersion _targetVersion, address _vestingContract, address _targetToken ) public {
+    constructor ( vestingContractVersion _targetVersion, address _vestingContract, address _targetToken ) public
+    TokenHandler(_targetToken){
         setVestingContract(_targetVersion, _vestingContract);
-        setTargetToken(_targetToken);
     }
 
     function setVestingContract (vestingContractVersion _version, address _vestingContract) public onlyOwner returns (bool) {
         require(vestingContract == 0x0, 'Vesting Contract already set');
         vestingContract = _vestingContract;
         targetVersion = _version;
-        return true;
-    }
-
-    function setTargetToken (address _targetToken) public onlyOwner returns (bool) {
-        require(targetToken == 0x0, 'Target token aleady set');
-        targetToken = _targetToken;
         return true;
     }
 
