@@ -18,19 +18,23 @@ EVM Optimization: ON
 Optimization: 200
 ```
 
-#### Ropsten  
+#### Ropsten
 
 |Contract| Deployment Cost | Address |
 |-|-| --|
-|TokenDistributor| **777107** | [0xe18bac062d374fb3611635e3acd16aaf308177b5](https://ropsten.etherscan.io/address/0xe18bac062d374fb3611635e3acd16aaf308177b5)|  
-|WeightedTokenDistributor| **1088205** |[0x7434c433fbb79a60b94bb6fa117f2e2c00dcc2f9](https://ropsten.etherscan.io/address/0x7434c433fbb79a60b94bb6fa117f2e2c00dcc2f9)|  
-|WithVestingContract| **1423579** |[0xca4f37a2790125dde37733dbae51599b884a117c](https://ropsten.etherscan.io/address/0xca4f37a2790125dde37733dbae51599b884a117c)|  
+|TokenHandler| **381400** | [0x64446d8899ebe87e708ff783dbe127d10c3fec05](https://ropsten.etherscan.io/address/0x64446d8899ebe87e708ff783dbe127d10c3fec05)|
+|VestingHandler| **749052** | [0x935222ac155452b438bed392266c7da629c172c7](https://ropsten.etherscan.io/address/0x935222ac155452b438bed392266c7da629c172c7)|
+|TokenDistributor| **823394** | [0xa121f3b1bf636612bc9ace753c5110f8d6dee493](https://ropsten.etherscan.io/address/0xa121f3b1bf636612bc9ace753c5110f8d6dee493)|  
+|WeightedTokenDistributor| **1146363** |[0xc46899eb466d190061ec1928262ae3e9d99881e3](https://ropsten.etherscan.io/address/0xc46899eb466d190061ec1928262ae3e9d99881e3)|  
+|WithVestingContract| **1559142** |[0x68789c1da9a03ab0c1120f1c6f394eca508ddc38](https://ropsten.etherscan.io/address/0x68789c1da9a03ab0c1120f1c6f394eca508ddc38)|  
 
 
-#### Kovan  
+#### Kovan
 
 |Contract| Deployment Cost | Address |
 |-|-| --|
-|TokenDistributor (`null _targetToken`)| **760827** | [0x52009d78b41275d301d2446c07695b9938abeb1e](https://kovan.etherscan.io/address/0x52009d78b41275d301d2446c07695b9938abeb1e)|  
-|WeightedTokenDistributor (`null _targetToken`)| **1071925** |[0x5027d4ae8af4643892280b4f9ea794a69877f86a](https://kovan.etherscan.io/address/0x5027d4ae8af4643892280b4f9ea794a69877f86a)|  
-|WithVestingContract (`null _targetToken`)| **1407299** |[0x1e3edc6f66a84b8ef4cd6dad46b352cdac509829](https://kovan.etherscan.io/address/0x1e3edc6f66a84b8ef4cd6dad46b352cdac509829)|  
+|TokenHandler (`null _targetToken`)| **365120** | [0xca5857d7214aab2b95ebe6b07892573c378a75a6](https://kovan.etherscan.io/address/0xca5857d7214aab2b95ebe6b07892573c378a75a6)|  
+|VestingHandler (`null _targetToken`)| **732772** | [0x85363bc863a9a5054476628a1c79fec9f23730bc](https://kovan.etherscan.io/address/0x85363bc863a9a5054476628a1c79fec9f23730bc)|  
+|TokenDistributor (`null _targetToken`)| **807114** | [0x90319e0f8590d1ba10d212f119b8cc10be2d2fb6](https://kovan.etherscan.io/address/0x90319e0f8590d1ba10d212f119b8cc10be2d2fb6)|  
+|WeightedTokenDistributor (`null _targetToken`)| **1130083** |[0x6f44ab9f41723ee6c9ae8048225f4497c00cc73b](https://kovan.etherscan.io/address/0x6f44ab9f41723ee6c9ae8048225f4497c00cc73b)|  
+|WithVestingContract (`null _targetToken`)| **1544142** |[0x53761ae6b2ad99120825843b9422be2781020d7d](https://kovan.etherscan.io/address/0x53761ae6b2ad99120825843b9422be2781020d7d)|  
