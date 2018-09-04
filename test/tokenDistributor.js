@@ -104,7 +104,7 @@ contract('TokenDistributor', (accounts) => {
     const falseisDistributionDue = await tokenDistributor.contract.isDistributionDue[''].call();
     assert.isFalse(falseisDistributionDue, 'TokenHandler should have no tokens');
 
-    const tokensToMint = Math.floor(10 ** (100 * Math.random()));
+    const tokensToMint = Math.floor(10 ** (50 * Math.random()));
     await token.mint(tokenDistributor.address, tokensToMint);
 
     const isDistributionDue = await tokenDistributor.contract.isDistributionDue[''].call();
