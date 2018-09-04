@@ -55,7 +55,7 @@ contract WeightedTokenDistributor is TokenDistributor {
         uint256 totalWeight = getTotalWeight();
 
         if (balance < 1) {
-            emit InsufficientTokenBalance(_token, block.timestamp);
+            emit InsufficientTokenBalance(_token);
             return false;
         } else {
             for (uint256 count = 0; count < stakeHolders.length; count++) {
@@ -68,7 +68,7 @@ contract WeightedTokenDistributor is TokenDistributor {
                 _transfer(_token, owner, newBalance);
             }
 
-            emit TokensDistributed(_token, balance, block.timestamp);
+            emit TokensDistributed(_token, balance);
             return true;
         }
     }

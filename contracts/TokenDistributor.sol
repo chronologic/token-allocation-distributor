@@ -8,8 +8,8 @@ contract TokenDistributor is TokenHandler {
 
     address[] public stakeHolders;
     uint256 public maxStakeHolders;
-    event InsufficientTokenBalance( address indexed _token, uint256 _time );
-    event TokensDistributed( address indexed _token, uint256 _total, uint256 _time );
+    event InsufficientTokenBalance( address indexed _token );
+    event TokensDistributed( address indexed _token, uint256 _total );
 
     constructor ( address _targetToken, uint256 _totalStakeHolders, address[] _stakeHolders) public
     TokenHandler(_targetToken) {
@@ -50,7 +50,7 @@ contract TokenDistributor is TokenHandler {
         uint256 perStakeHolder = getPortion(balance);
 
         if (balance < 1) {
-            emit InsufficientTokenBalance(_token, block.timestamp);
+            emit InsufficientTokenBalance(_token);
             return false;
         } else {
             for (uint256 count = 0; count < stakeHolders.length; count++) {
@@ -62,7 +62,7 @@ contract TokenDistributor is TokenHandler {
                 _transfer(_token, owner, newBalance);
             }
 
-            emit TokensDistributed(_token, balance, block.timestamp);
+            emit TokensDistributed(_token, balance);
             return true;
         }
     }
