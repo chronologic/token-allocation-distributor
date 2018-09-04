@@ -78,6 +78,14 @@ contract("Weighted Token Distributor", (accounts) => {
             expectedPortion,
             "The expected portion was returned from the Weighted Token Distributor."
         );
+
+        const returnedJSPortion = await weightedTokenDistributor.contract.getPortion['uint256,address'](100, initialStakeholders[0]);
+
+        assert.strictEqual(
+            returnedJSPortion.toNumber(),
+            expectedPortion,
+            "The expected portion was returned from the JS getPortion of Weighted Token Distributor."
+        );
     })
 
     it('Correctly distributes 100 tokens', async () => {

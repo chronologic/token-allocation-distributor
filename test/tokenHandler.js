@@ -26,7 +26,7 @@ contract('TokenHandler', (accounts) => {
     const returnedEmptyBalance = await tokenHandler.getTokenBalance.call(token.address);
     assert.equal(returnedEmptyBalance.toNumber(), 0, 'TokenHandler should have no tokens');
 
-    const tokensToMint = Math.floor(10 ** (100 * Math.random()));
+    const tokensToMint = Math.floor(10 ** (50 * Math.random()));
     await token.mint(tokenHandler.address, tokensToMint);
 
     const returnedBalance = await tokenHandler.getTokenBalance.call(token.address);
