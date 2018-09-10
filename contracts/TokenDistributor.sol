@@ -8,71 +8,71 @@ contract TokenDistributor is TokenHandler {
 
     address[] public stakeHolders;
     uint256 public maxStakeHolders;
-    event InsufficientTokenBalance( address indexed _token );
-    event TokensDistributed( address indexed _token, uint256 _total );
 
-    constructor ( address _targetToken, uint256 _totalStakeHolders, address[] _stakeHolders) public
-    TokenHandler(_targetToken) {
+    event TokensDistributed(address indexed _token, uint256 _total );
+
+    constructor (address _targetToken, uint256 _totalStakeHolders, address[] _stakeHolders)
+        public
+        TokenHandler(_targetToken)
+    {
+        require(_stakeHolders.length <= _totalStakeHolders, "The length of stakeholders array exceeds the amount of total stakeholders!");
         maxStakeHolders = _totalStakeHolders;
         if (_stakeHolders.length > 0) {
-            for (uint256 count = 0; count < _stakeHolders.length && count < _totalStakeHolders; count++) {
+            for (uint256 count = 0; count < _stakeHolders.length; count++) {
                 if (_stakeHolders[count] != 0x0) {
-                    _setStakeHolder(_stakeHolders[count]);
+                    // _setStakeHolder(_stakeHolders[count]);
+                    stakeHolders.push(_stakeHolders[count]);
                 }
             }
         }
     }
 
-    function isDistributionDue (address _token) public view returns (bool) {
-        return getTokenBalance(_token) > 1;
+    function () public {
+        distribute(targetToken);
     }
 
-    function isDistributionDue () public view returns (bool) {
-        return isDistributionDue(targetToken);
-    }
-
-    function countStakeHolders () public view returns (uint256) {
-        return stakeHolders.length;
-    }
-
-    function getPortion (uint256 _total) public view returns (uint256) {
-        return _total.div(stakeHolders.length);
-    }
-
-    function _setStakeHolder (address _stakeHolder) internal onlyOwner returns (bool) {
-        require(countStakeHolders() < maxStakeHolders, "Max StakeHolders set");
-        stakeHolders.push(_stakeHolder);
-        return true;
-    }
-
-    function _distribute (address _token) internal returns (bool) {
+    function distribute(address _token) 
+        internal returns (bool)
+    {
         uint256 balance = getTokenBalance(_token);
         uint256 perStakeHolder = getPortion(balance);
 
-        if (balance < 1) {
-            emit InsufficientTokenBalance(_token);
-            return false;
-        } else {
-            for (uint256 count = 0; count < stakeHolders.length; count++) {
-                _transfer(_token, stakeHolders[count], perStakeHolder);
-            }
+        require(balance > 0, "Contract has none of this token!");
 
-            uint256 newBalance = getTokenBalance(_token);
-            if (newBalance > 0 && getPortion(newBalance) == 0) {
-                _transfer(_token, owner, newBalance);
-            }
-
-            emit TokensDistributed(_token, balance);
-            return true;
+        for (uint256 count = 0; count < stakeHolders.length; count++) {
+            _transfer(_token, stakeHolders[count], perStakeHolder);
         }
+
+        uint256 newBalance = getTokenBalance(_token);
+        if (newBalance > 0 && getPortion(newBalance) == 0) {
+            _transfer(_token, owner, newBalance);
+        }
+
+        emit TokensDistributed(_token, balance);
+        return true;
     }
 
-    function distribute () public returns (bool) {
-        require(targetToken != 0x0, 'Target token not set');
-        return _distribute(targetToken);
+    function isDistributionDue(address _token)
+        public view returns (bool success)
+    {
+        return getTokenBalance(_token) > 1;
     }
 
-    function () public {
-        distribute();
+    function isDistributionDueTarget()
+        public view returns (bool success)
+    {
+        return isDistributionDue(targetToken);
+    }
+
+    function countStakeHolders()
+        public view returns (uint256 numOfStakeHolders)
+    {
+        return stakeHolders.length;
+    }
+
+    function getPortion(uint256 _total)
+        public view returns (uint256 portion)
+    {
+        return _total.div(stakeHolders.length);
     }
 }
