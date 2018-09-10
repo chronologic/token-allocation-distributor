@@ -4,7 +4,7 @@ https://github.com/OpenZeppelin/openzeppelin-solidity/blob/master/contracts/toke
 */
 pragma solidity ^0.4.24;
 
-import "./interfaces/IVestingContract.sol";
+import "./IVestingContract.sol";
 import "./WeightedTokenDistributor.sol";
 
 contract WithVestingContract is WeightedTokenDistributor {

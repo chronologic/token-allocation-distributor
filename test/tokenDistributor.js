@@ -1,10 +1,6 @@
 const DummyToken = artifacts.require("./DummyToken.sol");
 const TokenDistributor = artifacts.require("./TokenDistributor.sol");
-const deployConfig = {
 
-}
-
-let me;
 const newDummy = () => DummyToken.new();
 const newDistributor = (_token, _stakeHoldersCount, _stakeHolders) => {
   return TokenDistributor.new(
@@ -12,10 +8,10 @@ const newDistributor = (_token, _stakeHoldersCount, _stakeHolders) => {
   )
 }
 
-contract('==TokenDistributor==', (accounts) => {
+contract('TokenDistributor', (accounts) => {
   let token;
   let instance;
-  me = accounts[0];
+  const me = accounts[0];
   const stakeHoldersCount = Math.floor((accounts.length-3) * Math.random()) + 1;
   const stakeHolders = accounts.filter( (account, index) => {
     return index > 0 && index < (stakeHoldersCount+1);
@@ -42,17 +38,11 @@ contract('==TokenDistributor==', (accounts) => {
     console.log('TokenDistributor: ',instance.address)
   })
 
-  describe('_setStakeHolder()', () => {
-
-    it('Should fail to access setHolder', () => {
-      assert.strictEqual(instance._setStakeHolder, undefined, 'setStakeHolder function could be accessed');
-    })
+  it('Should fail to access setHolder', () => {
+    assert.strictEqual(instance._setStakeHolder, undefined, 'setStakeHolder function could be accessed');
   })
 
-  describe('_transfer()', () => {
-
-    it('Should fail to access transfer', () => {
-      assert.strictEqual(instance._transfer, undefined, '_transfer function could be accessed');
-    })
+  it('Should fail to access transfer', () => {
+    assert.strictEqual(instance._transfer, undefined, '_transfer function could be accessed');
   })
 })
