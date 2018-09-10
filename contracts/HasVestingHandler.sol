@@ -1,7 +1,7 @@
 pragma solidity ^0.4.24;
 
 import "../installed_contracts/zeppelin-solidity/contracts/ownership/Ownable.sol";
-import "../interfaces/IVestingHandler.sol";
+import "./interfaces/IVestingHandler.sol";
 
 /**
 * A secondary contract which can interact directly with vestingHandler

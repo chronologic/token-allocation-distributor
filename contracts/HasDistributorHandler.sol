@@ -1,7 +1,7 @@
 pragma solidity ^0.4.24;
 
 import "../installed_contracts/zeppelin-solidity/contracts/ownership/Ownable.sol";
-import "../interfaces/ITokenDistributor.sol";
+import "./interfaces/ITokenDistributor.sol";
 
 /**
 * A secondary contract which can interact directly with tokenDistributor
