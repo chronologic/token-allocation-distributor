@@ -30,6 +30,12 @@ contract WeightedTokenDistributor is TokenDistributor {
         return (_total.mul(weight)).div(_totalWeight);
     }
 
+    function getPortion (uint256 _total, address _stakeHolder) public view returns (uint256) {
+        uint256 totalWeight = getTotalWeight();
+        uint256 weight = stakeHoldersWeight[_stakeHolder];
+        return (_total.mul(weight)).div(totalWeight);
+    }
+
     function getPortion (uint256 _total) public view returns (uint256) {
         revert("Kindly indicate stakeHolder and totalWeight");
     }
@@ -44,12 +50,12 @@ contract WeightedTokenDistributor is TokenDistributor {
         revert("Kindly set Weights for stakeHolder");
     }
 
-    function distribute (address _token) public returns (bool) {
+    function _distribute (address _token) internal returns (bool) {
         uint256 balance = getTokenBalance(_token);
         uint256 totalWeight = getTotalWeight();
 
         if (balance < 1) {
-            emit InsufficientTokenBalance(_token, block.timestamp);
+            emit InsufficientTokenBalance(_token);
             return false;
         } else {
             for (uint256 count = 0; count < stakeHolders.length; count++) {
@@ -62,7 +68,7 @@ contract WeightedTokenDistributor is TokenDistributor {
                 _transfer(_token, owner, newBalance);
             }
 
-            emit TokensDistributed(_token, balance, block.timestamp);
+            emit TokensDistributed(_token, balance);
             return true;
         }
     }

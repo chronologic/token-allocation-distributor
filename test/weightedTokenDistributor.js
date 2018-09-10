@@ -29,9 +29,8 @@ contract("Weighted Token Distributor", (accounts) => {
         );
 
         assert(weightedTokenDistributor.address, "Weighted Token Distributor was deployed and has an address.");
-    })
 
-    it("Correctly sets the targetToken", async () => {
+
         await weightedTokenDistributor.setTargetToken(dummyToken.address,
           {
               from: default_account,
@@ -43,66 +42,6 @@ contract("Weighted Token Distributor", (accounts) => {
             returnedToken,
             expectedToken,
             "The expected token was returned from the Weighted Token Distributor."
-        );
-    })
-
-    it("Correctly returns the targetToken", async () => {
-        const returnedToken = await weightedTokenDistributor.targetToken();
-
-        const expectedToken = dummyToken.address;
-        assert.strictEqual(
-            returnedToken,
-            expectedToken,
-            "The expected token was returned from the Weighted Token Distributor."
-        );
-    })
-
-    it("Fails to update the targetToken", async () => {
-        await weightedTokenDistributor.setTargetToken(accounts[5],{
-            from: default_account,
-        });
-
-        const returnedToken = await weightedTokenDistributor.targetToken();
-        const unExpectedToken = accounts[5];
-        assert.notStrictEqual(
-            returnedToken,
-            unExpectedToken,
-            "The expected token was not returned from the Weighted Token Distributor."
-        );
-    })
-
-    it('Correctly returns the stakeHolders array', async () => {
-        const returnedStakeHolders = await weightedTokenDistributor.stakeHolders(2);
-
-        const expectedStakeHolders = initialStakeholders[2];
-
-        assert.strictEqual(
-            returnedStakeHolders,
-            expectedStakeHolders,
-            "The expected stakeHolders array was returned from the Weighted Token Distribution."
-        );
-    })
-
-    it("Correctly returns the maxStakeHolders", async () => {
-        const returnedMaxStakeHolders = await weightedTokenDistributor.maxStakeHolders();
-
-        const expectedMaxStakeHolders = totalStakeholders;
-        assert.strictEqual(
-            returnedMaxStakeHolders.toNumber(),
-            expectedMaxStakeHolders,
-            "The expected maxStakeHolders was returned from the Weighted Token Distributor."
-        );
-    })
-
-    it('Correctly counts stakeHolders', async () => {
-        const returnedCount = await weightedTokenDistributor.countStakeHolders();
-
-        const expectedCount = initialStakeholderCount;
-
-        assert.strictEqual(
-            returnedCount.toNumber(),
-            expectedCount,
-            "The expected count was returned from the Weighted Token Distributor."
         );
     })
 
@@ -119,11 +58,18 @@ contract("Weighted Token Distributor", (accounts) => {
     })
 
     it('Reverts on using `getPortion` without a weight param', async () => {
-        // assert.throws(await weightedTokenDistributor.getPortion(3));
+      //Use weightedTokenDistributor.contract to access overloaded functions
+      try {
+        await weightedTokenDistributor.contract.getPortion['uint256'](3);
+        assert.fail('Fethced portion without providing weight');
+      } catch (e) {
+        assert.ok('Requires weight to getPortion');
+      }
     })
 
     it('Correctly calculates the portion according to the weight passed', async () => {
-        const returnedPortion = await weightedTokenDistributor.getPortion(100, 10, initialStakeholders[0]);
+      //Use weightedTokenDistributor.contract to access overloaded functions
+        const returnedPortion = await weightedTokenDistributor.contract.getPortion['uint256,uint256,address'](100, 10, initialStakeholders[0]);
 
         const expectedPortion = 100 * 3 / 10;
 
@@ -131,6 +77,14 @@ contract("Weighted Token Distributor", (accounts) => {
             returnedPortion.toNumber(),
             expectedPortion,
             "The expected portion was returned from the Weighted Token Distributor."
+        );
+
+        const returnedJSPortion = await weightedTokenDistributor.contract.getPortion['uint256,address'](100, initialStakeholders[0]);
+
+        assert.strictEqual(
+            returnedJSPortion.toNumber(),
+            expectedPortion,
+            "The expected portion was returned from the JS getPortion of Weighted Token Distributor."
         );
     })
 
@@ -150,8 +104,7 @@ contract("Weighted Token Distributor", (accounts) => {
             "Created 100 dummyTokens to Weighted Token Distributor."
         );
 
-        // Check the balances of the stakeHolders and assert they === 0
-        // before the transfers take place.
+        // Check the balances of the stakeHolders and assert they === 0, before the transfers take place.
         await initialStakeholders.map(async (stakeholder) => {
             assert.strictEqual(
                 (await dummyToken.balanceOf(stakeholder)).toNumber(),
@@ -166,7 +119,7 @@ contract("Weighted Token Distributor", (accounts) => {
             50,
         ];
 
-        await weightedTokenDistributor.distribute(dummyToken.address);
+        await weightedTokenDistributor.distribute();
 
         await initialStakeholders.map(async (stakeholder, idx) => {
             assert.strictEqual(
