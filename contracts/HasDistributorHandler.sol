@@ -1,7 +1,7 @@
 pragma solidity ^0.4.24;
 
-import "../installed_contracts/zeppelin-solidity/contracts/ownership/Ownable.sol";
 import "./interfaces/ITokenDistributor.sol";
+import "../installed_contracts/zeppelin-solidity/contracts/ownership/Ownable.sol";
 
 /**
 * A secondary contract which can interact directly with tokenDistributor
@@ -22,8 +22,8 @@ contract HasDistributorHandler is Ownable {
 
     enum distributorContractVersion { v1, v2 }
 
-    address public distributorVersion;
     address public tokenDistributor;
+    distributorContractVersion public distributorVersion;
 
     constructor (distributorContractVersion _distributorVersion, address _tokenDistributor) public Ownable() {
         setTokenDistributor(_distributorVersion, _tokenDistributor);

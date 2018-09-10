@@ -1,6 +1,7 @@
 pragma solidity ^0.4.24;
+import "./IOwnable.sol";
 
-contract VestingHandler is Ownable {
+contract IVestingHandler is IOwnable {
 
     enum vestingContractVersion { v1, v2 }
 

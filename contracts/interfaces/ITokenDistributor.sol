@@ -1,6 +1,7 @@
 pragma solidity ^0.4.24;
+import "./IOwnable.sol";
 
-contract ITokenDistributor {
+contract ITokenDistributor is IOwnable {
 
     address public targetToken;
     address[] public stakeHolders;
