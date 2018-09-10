@@ -1,6 +1,6 @@
 pragma solidity ^0.4.24;
 
-contract TokenDistributor {
+contract ITokenDistributor {
 
     address public targetToken;
     address[] public stakeHolders;
@@ -15,4 +15,5 @@ contract TokenDistributor {
     function getPortion (uint256 _total) public view returns (uint256);
     function setTargetToken (address _targetToken) public returns (bool);
     function distribute (address _token) public returns (bool);
+    function distribute () public returns (bool);
 }
