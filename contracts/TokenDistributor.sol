@@ -1,20 +1,18 @@
 pragma solidity ^0.4.24;
 
 import "../installed_contracts/zeppelin-solidity/contracts/math/SafeMath.sol";
-import "../installed_contracts/zeppelin-solidity/contracts/ownership/Ownable.sol";
-import "../installed_contracts/zeppelin-solidity/contracts/token/ERC20/ERC20Basic.sol";
+import "./TokenHandler.sol";
 
-contract TokenDistributor is Ownable {
+contract TokenDistributor is TokenHandler {
     using SafeMath for uint;
 
-    address public targetToken;
     address[] public stakeHolders;
     uint256 public maxStakeHolders;
-    event InsufficientTokenBalance( address indexed _token, uint256 _time );
-    event TokensDistributed( address indexed _token, uint256 _total, uint256 _time );
+    event InsufficientTokenBalance( address indexed _token );
+    event TokensDistributed( address indexed _token, uint256 _total );
 
-    constructor ( address _targetToken, uint256 _totalStakeHolders, address[] _stakeHolders) public Ownable() {
-        setTargetToken(_targetToken);
+    constructor ( address _targetToken, uint256 _totalStakeHolders, address[] _stakeHolders) public
+    TokenHandler(_targetToken) {
         maxStakeHolders = _totalStakeHolders;
         if (_stakeHolders.length > 0) {
             for (uint256 count = 0; count < _stakeHolders.length && count < _totalStakeHolders; count++) {
@@ -30,27 +28,15 @@ contract TokenDistributor is Ownable {
     }
 
     function isDistributionDue () public view returns (bool) {
-        return getTokenBalance(targetToken) > 1;
+        return isDistributionDue(targetToken);
     }
 
     function countStakeHolders () public view returns (uint256) {
         return stakeHolders.length;
     }
 
-    function getTokenBalance(address _token) public view returns (uint256) {
-        ERC20Basic token = ERC20Basic(_token);
-        return token.balanceOf(address(this));
-    }
-
     function getPortion (uint256 _total) public view returns (uint256) {
         return _total.div(stakeHolders.length);
-    }
-
-    function setTargetToken (address _targetToken) public onlyOwner returns (bool) {
-        if(_targetToken != 0x0 && targetToken == 0x0) {
-          targetToken = _targetToken;
-          return true;
-        }
     }
 
     function _setStakeHolder (address _stakeHolder) internal onlyOwner returns (bool) {
@@ -59,17 +45,12 @@ contract TokenDistributor is Ownable {
         return true;
     }
 
-    function _transfer (address _token, address _recipient, uint256 _value) internal {
-        ERC20Basic token = ERC20Basic(_token);
-        token.transfer(_recipient, _value);
-    }
-
-    function distribute (address _token) public returns (bool) {
+    function _distribute (address _token) internal returns (bool) {
         uint256 balance = getTokenBalance(_token);
         uint256 perStakeHolder = getPortion(balance);
 
         if (balance < 1) {
-            emit InsufficientTokenBalance(_token, block.timestamp);
+            emit InsufficientTokenBalance(_token);
             return false;
         } else {
             for (uint256 count = 0; count < stakeHolders.length; count++) {
@@ -81,12 +62,17 @@ contract TokenDistributor is Ownable {
                 _transfer(_token, owner, newBalance);
             }
 
-            emit TokensDistributed(_token, balance, block.timestamp);
+            emit TokensDistributed(_token, balance);
             return true;
         }
     }
 
+    function distribute () public returns (bool) {
+        require(targetToken != 0x0, 'Target token not set');
+        return _distribute(targetToken);
+    }
+
     function () public {
-        distribute(targetToken);
+        distribute();
     }
 }

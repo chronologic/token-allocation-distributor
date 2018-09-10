@@ -9,7 +9,8 @@ install:
   - npm install -g ganache-cli
   - npm install
 script:
-  - npm test
+  - truffle test test/!(withVestingContract.js)
+  - npm run test:vesting
 before_script:
   - ganache-cli > /dev/null &
   - sleep 5
