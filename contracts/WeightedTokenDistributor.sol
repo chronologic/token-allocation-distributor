@@ -19,13 +19,14 @@ contract WeightedTokenDistributor is TokenDistributor {
         }
     }
 
+    // Note - Refactor to calculate on join and store as variable.
     function getTotalWeight () public view returns (uint256 _total) {
         for (uint256 count = 0; count < stakeHolders.length; count++) {
             _total = _total.add(stakeHoldersWeight[stakeHolders[count]]);
         }
     }
 
-    function getPortion (uint256 _total, uint256 _totalWeight, address _stakeHolder) public view returns (uint256) {
+    function _getPortion (uint256 _total, uint256 _totalWeight, address _stakeHolder) internal view returns (uint256) {
         uint256 weight = stakeHoldersWeight[_stakeHolder];
         return (_total.mul(weight)).div(_totalWeight);
     }
@@ -52,14 +53,14 @@ contract WeightedTokenDistributor is TokenDistributor {
 
     function _distribute (address _token) internal returns (bool) {
         uint256 balance = getTokenBalance(_token);
-        uint256 totalWeight = getTotalWeight();
+        // uint256 totalWeight = getTotalWeight();
 
         if (balance < 1) {
             emit InsufficientTokenBalance(_token);
             return false;
         } else {
             for (uint256 count = 0; count < stakeHolders.length; count++) {
-                uint256 perStakeHolder = getPortion(balance, totalWeight, stakeHolders[count]);
+                uint256 perStakeHolder = getPortion(stakeHolders[count]);
                 _transfer(_token, stakeHolders[count], perStakeHolder);
             }
 

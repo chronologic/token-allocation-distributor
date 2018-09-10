@@ -1,5 +1,5 @@
-const DummyToken = artifacts.require("./DummyToken.sol")
-const WeightedTokenDistributor = artifacts.require("./WeightedTokenDistributor.sol")
+const DummyToken = artifacts.require("./DummyToken.sol");
+const WeightedTokenDistributor = artifacts.require("./WeightedTokenDistributor.sol");
 
 contract("Weighted Token Distributor", (accounts) => {
     const default_account = accounts[0];
@@ -32,9 +32,9 @@ contract("Weighted Token Distributor", (accounts) => {
 
 
         await weightedTokenDistributor.setTargetToken(dummyToken.address,
-          {
-              from: default_account,
-          });
+            {
+                from: default_account,
+            });
 
         const returnedToken = await weightedTokenDistributor.targetToken();
         const expectedToken = dummyToken.address;
@@ -43,9 +43,9 @@ contract("Weighted Token Distributor", (accounts) => {
             expectedToken,
             "The expected token was returned from the Weighted Token Distributor."
         );
-    })
+    });
 
-    it('Correctly calculates the weight', async () => {
+    it("Correctly calculates the weight", async () => {
         const returnedWeight = await weightedTokenDistributor.getTotalWeight();
 
         const expectedWeight = initialWeights.reduce((a,b) => a+b, 0);
@@ -55,21 +55,21 @@ contract("Weighted Token Distributor", (accounts) => {
             expectedWeight,
             "The expected weight was returned from the Weighted Token Distributor."
         );
-    })
+    });
 
-    it('Reverts on using `getPortion` without a weight param', async () => {
-      //Use weightedTokenDistributor.contract to access overloaded functions
-      try {
-        await weightedTokenDistributor.contract.getPortion['uint256'](3);
-        assert.fail('Fethced portion without providing weight');
-      } catch (e) {
-        assert.ok('Requires weight to getPortion');
-      }
-    })
+    it("Reverts on using `getPortion` without a weight param", async () => {
+        //Use weightedTokenDistributor.contract to access overloaded functions
+        try {
+            await weightedTokenDistributor.contract.getPortion["uint256"](3);
+            assert.fail("Fethced portion without providing weight");
+        } catch (e) {
+            assert.ok("Requires weight to getPortion");
+        }
+    });
 
-    it('Correctly calculates the portion according to the weight passed', async () => {
-      //Use weightedTokenDistributor.contract to access overloaded functions
-        const returnedPortion = await weightedTokenDistributor.contract.getPortion['uint256,uint256,address'](100, 10, initialStakeholders[0]);
+    it("Correctly calculates the portion according to the weight passed", async () => {
+        //Use weightedTokenDistributor.contract to access overloaded functions
+        const returnedPortion = await weightedTokenDistributor.contract.getPortion["uint256,uint256,address"](100, 10, initialStakeholders[0]);
 
         const expectedPortion = 100 * 3 / 10;
 
@@ -79,16 +79,16 @@ contract("Weighted Token Distributor", (accounts) => {
             "The expected portion was returned from the Weighted Token Distributor."
         );
 
-        const returnedJSPortion = await weightedTokenDistributor.contract.getPortion['uint256,address'](100, initialStakeholders[0]);
+        const returnedJSPortion = await weightedTokenDistributor.contract.getPortion["uint256,address"](100, initialStakeholders[0]);
 
         assert.strictEqual(
             returnedJSPortion.toNumber(),
             expectedPortion,
             "The expected portion was returned from the JS getPortion of Weighted Token Distributor."
         );
-    })
+    });
 
-    it('Correctly distributes 100 tokens', async () => {
+    it("Correctly distributes 100 tokens", async () => {
         await dummyToken.mint(
             weightedTokenDistributor.address,
             100,
@@ -128,5 +128,5 @@ contract("Weighted Token Distributor", (accounts) => {
                 "Each stakeholder was given the correct weighted balance."
             );
         });
-    })
-})
+    });
+});

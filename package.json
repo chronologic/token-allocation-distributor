@@ -8,8 +8,11 @@
   },
   "scripts": {
     "build-contracts": "sol-merger \"./contracts/*.sol\" ./build",
+    "lint": "./node_modules/.bin/eslint test/*.js",
+    "lint:fix": "./node_modules/.bin/eslint test/*.js --fix",
     "test": "truffle test 'test/!(withVestingContract.js)' && npm run test:vesting",
-    "test:vesting": "truffle test test/withVestingContract.js"
+    "test:vesting": "truffle test test/withVestingContract.js",
+    "test:dev": "truffle test test/tokenDistributor.js"
   },
   "repository": {
     "type": "git",
@@ -30,6 +33,8 @@
   },
   "homepage": "https://github.com/chronologic/token-allocation-distributor#readme",
   "devDependencies": {
-    "sol-merger": "^0.1.2"
+    "eslint": "5.5.0",
+    "sol-merger": "^0.1.2",
+    "truffle": "4.1.14"
   }
 }
