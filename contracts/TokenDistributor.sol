@@ -67,6 +67,11 @@ contract TokenDistributor is TokenHandler {
         }
     }
 
+    function distributeTokens (address _targetToken) public onlyOwner returns (bool) {
+        require(_targetToken != 0x0, 'Target token not set');
+        return _distribute(_targetToken);
+    }
+
     function distribute () public returns (bool) {
         require(targetToken != 0x0, 'Target token not set');
         return _distribute(targetToken);
