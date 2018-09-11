@@ -30,26 +30,26 @@ contract HasDistributorHandler is Ownable {
     }
 
     function setTokenDistributor (distributorContractVersion _distributorVersion, address _tokenDistributor) public onlyOwner returns (bool) {
-      require(tokenDistributor == 0x0);
+      require(tokenDistributor == 0x0, 'Token Distributor already set');
       distributorVersion = _distributorVersion;
       tokenDistributor = _tokenDistributor;
       return true;
     }
 
     function distribute () public returns (bool) {
-        require(tokenDistributor != 0x0);
+        require(tokenDistributor != 0x0, 'Token Distributor not set');
 
         if (distributorVersion == distributorContractVersion.v2) {
-            return ITokenDistributor(tokenDistributor).distribute();
-        } else {
           /* TODO Check functionaliy and optimize  */
             tokenDistributor.transfer(0);
             return true;
+        } else {
+          return ITokenDistributor(tokenDistributor).distribute();
         }
         return false;
     }
 
-    function () {
+    function () public {
       distribute();
     }
 }

@@ -16,17 +16,17 @@ contract HasVestingHandler is Ownable {
     }
 
     function setVestingHandler (address _vestingHandler) public onlyOwner returns (bool) {
-      require(vestingHandler == 0x0);
+      require(vestingHandler == 0x0, 'Vesting Handler already set');
       vestingHandler = _vestingHandler;
       return true;
     }
 
     function release () public returns (bool){
-        require(vestingHandler != 0x0);
+        require(vestingHandler != 0x0, 'Vesting Handler not set');
         IVestingHandler(vestingHandler).release();
     }
 
-    function () {
+    function () public {
       release();
     }
 }

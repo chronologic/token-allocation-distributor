@@ -38,7 +38,7 @@ contract VestingHandler is TokenHandler {
     }
 
     function _releaseVesting (vestingContractVersion _version, address _vestingContract, address _targetToken) internal returns (bool) {
-        require(_targetToken != 0x0);
+        require(_targetToken != 0x0, 'Target token not set');
         if (_version == vestingContractVersion.v1) {
             return _releaseVesting (_version, _vestingContract);
         } else if (_version == vestingContractVersion.v2){
