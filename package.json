@@ -36,5 +36,8 @@
     "eslint": "5.5.0",
     "sol-merger": "^0.1.2",
     "truffle": "4.1.14"
+  },
+  "dependencies": {
+    "openzeppelin-solidity": "^2.0.0-rc.1"
   }
 }
