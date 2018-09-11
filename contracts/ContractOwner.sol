@@ -13,7 +13,7 @@ contract ContractOwner is Ownable {
    * @dev Relinquish control of the owned _contract.
    */
   function renounceOwnedOwnership(address _contract) public onlyOwner {
-    Ownable(_contractAddress).renounceOwnership();
+    Ownable(_contract).renounceOwnership();
   }
 
   /**
@@ -21,6 +21,6 @@ contract ContractOwner is Ownable {
    * @param _newOwner The address to transfer ownership to.
    */
   function transferOwnedOwnership(address _contract, address _newOwner) public onlyOwner {
-    Ownable(_contractAddress).transferOwnedOwnership(_newOwner);
+    Ownable(_contract).transferOwnership(_newOwner);
   }
 }
