@@ -41,8 +41,7 @@ contract HasDistributorHandler is Ownable {
 
         if (distributorVersion == distributorContractVersion.v2) {
           /* TODO Check functionaliy and optimize  */
-            tokenDistributor.transfer(0);
-            return true;
+            return tokenDistributor.call(0x0);
         } else {
           return ITokenDistributor(tokenDistributor).distribute();
         }
