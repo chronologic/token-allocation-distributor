@@ -105,13 +105,13 @@ contract("Weighted Token Distributor", (accounts) => {
         );
 
         // Check the balances of the stakeHolders and assert they === 0, before the transfers take place.
-        await initialStakeholders.map(async (stakeholder) => {
+        await Promise.all(initialStakeholders.map(async (stakeholder) => {
             assert.strictEqual(
                 (await dummyToken.balanceOf(stakeholder)).toNumber(),
                 0,
                 `${stakeholder} balance === 0`
             );
-        });
+        }));
 
         const expectedBalances = [
             30,
@@ -121,12 +121,12 @@ contract("Weighted Token Distributor", (accounts) => {
 
         await weightedTokenDistributor.distribute();
 
-        await initialStakeholders.map(async (stakeholder, idx) => {
+        await Promise.all(initialStakeholders.map(async (stakeholder, idx) => {
             assert.strictEqual(
                 (await dummyToken.balanceOf(stakeholder)).toNumber(),
                 expectedBalances[idx],
                 "Each stakeholder was given the correct weighted balance."
             );
-        });
+        }));
     })
 })
