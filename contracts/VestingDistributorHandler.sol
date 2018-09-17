@@ -10,7 +10,7 @@ import "./HasVestingHandler.sol";
 */
 contract VestingDistributorHandler is HasVestingHandler, HasDistributorHandler {
 
-    constructor ( address _vestingHandler, distributorContractVersion _distributorVersion, address _tokenDistributor) public
+    constructor (address _vestingHandler, distributorContractVersion _distributorVersion, address _tokenDistributor) public
     HasDistributorHandler (_distributorVersion, _tokenDistributor)
     HasVestingHandler ( _vestingHandler)
     {

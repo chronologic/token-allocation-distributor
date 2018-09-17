@@ -22,6 +22,9 @@ Optimization: 200
 
 |Contract| Deployment Cost | Address |
 |-|-| --|
+|HasContracts| **509302** | [0xfCeDaE243eD70aCCAF2F65FA40aaafDd7b0591eB](https://ropsten.etherscan.io/address/0xfcedae243ed70accaf2f65fa40aaafdd7b0591eb)|
+|TokenHandler| **601112** | []
+
 |HasContracts| **298874** | [0xa5bf4ceaf442c4dc44a8656f8064c7693cf8eab1](https://ropsten.etherscan.io/address/0xa5bf4ceaf442c4dc44a8656f8064c7693cf8eab1)|
 |TokenHandler| **381400** | [0x64446d8899ebe87e708ff783dbe127d10c3fec05](https://ropsten.etherscan.io/address/0x64446d8899ebe87e708ff783dbe127d10c3fec05)|
 |VestingHandler| **749052** | [0x935222ac155452b438bed392266c7da629c172c7](https://ropsten.etherscan.io/address/0x935222ac155452b438bed392266c7da629c172c7)|

@@ -22,8 +22,14 @@ module.exports = {
     ropsten: {
       gas: 4700000,
       gasPrice: 10000000000, // 10 gwei
-      provider: new HDWalletProvider(mnemonic, "https://ropsten.infura.io"),
+      provider: new HDWalletProvider(mnemonic, "https://ropsten.infura.io/v3/06af9f3e62cf41d3a458c346b7dca44c"),
       network_id: "3"
+    }
+  },
+  solc: {
+    optimizer: {
+      enabled: true,
+      runs: 200
     }
   }
 };
