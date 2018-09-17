@@ -87,7 +87,7 @@ contract('TokenDistributor', (accounts) => {
       const total = Math.floor(256 ** (10 * Math.random()));
       const returnedPortion = await tokenDistributor.getPortion(total);
 
-      const expectedPortion = Math.floor( total /  expectedCount );
+      const expectedPortion = Number(Math.floor( total /  expectedCount ).toPrecision(18));
 
       assert.strictEqual(
           returnedPortion.toNumber(),
