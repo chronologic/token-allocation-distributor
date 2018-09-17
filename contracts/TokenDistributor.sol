@@ -11,7 +11,7 @@ contract TokenDistributor is TokenHandler {
     event InsufficientTokenBalance( address indexed _token );
     event TokensDistributed( address indexed _token, uint256 _total );
 
-    constructor ( address _targetToken, uint256 _totalStakeHolders, address[] _stakeHolders) public
+    constructor (address _targetToken, uint256 _totalStakeHolders, address[] _stakeHolders) public
     TokenHandler(_targetToken) {
         maxStakeHolders = _totalStakeHolders;
         if (_stakeHolders.length > 0) {

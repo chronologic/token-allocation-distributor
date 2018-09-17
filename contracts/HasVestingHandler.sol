@@ -11,7 +11,7 @@ contract HasVestingHandler is Ownable {
 
     address public vestingHandler;
 
-    constructor ( address _vestingHandler) public Ownable() {
+    constructor (address _vestingHandler) public Ownable() {
         setVestingHandler(_vestingHandler);
     }
 

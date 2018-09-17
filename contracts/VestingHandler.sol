@@ -25,7 +25,7 @@ contract VestingHandler is TokenHandler {
     address public vestingContract;
     vestingContractVersion public targetVersion;
 
-    constructor ( vestingContractVersion _targetVersion, address _vestingContract, address _targetToken ) public
+    constructor ( vestingContractVersion _targetVersion, address _vestingContract, address _targetToken) public
     TokenHandler(_targetToken){
         setVestingContract(_targetVersion, _vestingContract);
     }
