@@ -2,11 +2,12 @@ const DummyToken = artifacts.require("./DummyToken.sol");
 const TokenDistributor = artifacts.require("./TokenDistributor.sol");
 
 contract('TokenDistributor', (accounts) => {
+  
   let dummyToken;
   let tokenDistributor;
-  const me = accounts[0];
+
   const stakeHoldersCount = Math.floor((accounts.length-3) * Math.random()) + 1;
-  const stakeHolders = accounts.filter( (account, index) => {
+  const stakeHolders = accounts.filter( (_, index) => {
     return index > 0 && index < (stakeHoldersCount+1);
   })
   console.log('Total StakeHolders: ', stakeHoldersCount)
@@ -46,7 +47,7 @@ contract('TokenDistributor', (accounts) => {
       const expectedStakeHolders = stakeHolders.map(() => true);
       const returnedStakeHolders = [];
 
-      for ( let s = 0; s < stakeHolders.length; s++) {
+      for (let s = 0; s < stakeHolders.length; s++) {
         returnedStakeHolders.push(
           (await tokenDistributor.stakeHolders.call(s)) === stakeHolders[s]
         )
@@ -72,7 +73,7 @@ contract('TokenDistributor', (accounts) => {
   it('Correctly counts stakeHolders', async () => {
       const returnedCount = await tokenDistributor.countStakeHolders();
 
-      const expectedCount = stakeHolders.filter( stakeholder => Number(stakeholder) > 0).length;
+      const expectedCount = stakeHolders.filter(stakeholder => Number(stakeholder) > 0).length;
 
       assert.strictEqual(
           returnedCount.toNumber(),
@@ -83,11 +84,11 @@ contract('TokenDistributor', (accounts) => {
 
   it('Correctly calculates the portion split by providing total avaialble tokens', async () => {
     //Use weightedTokenDistributor.contract to access overloaded functions
-      const expectedCount = stakeHolders.filter( stakeholder => Number(stakeholder) > 0).length;
+      const expectedCount = stakeHolders.filter(stakeholder => Number(stakeholder) > 0).length;
       const total = Math.floor(256 ** (10 * Math.random()));
       const returnedPortion = await tokenDistributor.getPortion(total);
 
-      const expectedPortion = Number(Math.floor( total /  expectedCount ).toPrecision(18));
+      const expectedPortion = Number(Math.floor(total / expectedCount ).toPrecision(18));
 
       assert.strictEqual(
           returnedPortion.toNumber(),
@@ -112,7 +113,7 @@ contract('TokenDistributor', (accounts) => {
     assert.isAbove(balance.toNumber(), 0, 'Token Distributor should have allocated tokens');
 
     const portion = await tokenDistributor.getPortion.call(balance.toFixed());
-    const expectedBalance = stakeHolders.map( () => true );
+    const expectedBalance = stakeHolders.map(() => true );
 
     await tokenDistributor.distribute();
     const returnedBalance = await Promise.all(stakeHolders.map( async (stakeHolder) => (await dummyToken.balanceOf(stakeHolder)).toFixed() === portion.toFixed() ));

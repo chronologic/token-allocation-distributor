@@ -4,7 +4,7 @@ const NULL_ADDRESS = '0x0000000000000000000000000000000000000000';
 
 contract('HasContracts', (accounts) => {
   let hasContracts;
-  const owner = accounts[0];
+  const [owner] = accounts;
 
   const DummyOwnable = async(_owner) => {
     const ownable = await Ownable.new({
@@ -19,7 +19,7 @@ contract('HasContracts', (accounts) => {
     return ownable;
   }
 
-  const Recipient = () => accounts[Math.floor(Math.random()*(accounts.length-1))+1];
+  const randRecipient = () => accounts[Math.floor(Math.random()*(accounts.length-1))+1];
 
   before(async () => {
     hasContracts = await HasContracts.new({
@@ -30,12 +30,12 @@ contract('HasContracts', (accounts) => {
 
   it('Should fail to renounceOwnedOwnership from random address', async () => {
     const dummyOwned = await DummyOwnable(hasContracts.address);
-    const recipient = Recipient();
-    try{
+    const recipient = randRecipient();
+    try {
       await hasContracts.renounceOwnedOwnership(dummyOwned.address, {
         from: recipient
       });
-      asset.fail('Random address illegally renounceOwnedOwnership');
+      assert.fail('Random address illegally renounceOwnedOwnership');
     } catch (e) {
       assert.exists(e, 'Should have thrown an error');
     }
@@ -52,8 +52,8 @@ contract('HasContracts', (accounts) => {
 
   it('Should fail to transferOwnedOwnership from random address', async () => {
     const dummyOwned = await DummyOwnable(hasContracts.address);
-    const recipient = Recipient();
-    try{
+    const recipient = randRecipient();
+    try {
       await hasContracts.transferOwnedOwnership(
         dummyOwned.address, recipient, {
           from: accounts[0]
@@ -66,7 +66,7 @@ contract('HasContracts', (accounts) => {
 
   it('Should successfully transferOwnedOwnership', async () => {
     const dummyOwned = await DummyOwnable(hasContracts.address);
-    const recipient = Recipient();
+    const recipient = randRecipient();
     await hasContracts.transferOwnedOwnership(
       dummyOwned.address, recipient, {
         from: owner
@@ -74,7 +74,7 @@ contract('HasContracts', (accounts) => {
     const newOwner = await dummyOwned.owner.call();
     assert.strictEqual(newOwner, recipient,'Failed to transferOwnedOwnership');
 
-    try{
+    try {
       await dummyOwned.transferOwnership(owner, {
           from: recipient
         })

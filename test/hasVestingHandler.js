@@ -4,7 +4,7 @@ const VestingHandler = artifacts.require("./VestingHandler.sol");
 const HasVestingHandler = artifacts.require("./HasVestingHandler.sol");
 
 contract("HasVestingHandler", (accounts) => {
-    const owner = accounts[0];
+    const [owner] = accounts;
 
     let dummyToken;
     let dummyVesting;
@@ -13,6 +13,7 @@ contract("HasVestingHandler", (accounts) => {
     let vestingConfig;
 
     const makeBlockchainTime = time => Math.floor(time/1000);
+
     const forceMine = async (time) => {
       await web3.currentProvider.send({
         jsonrpc: "2.0",
@@ -26,7 +27,8 @@ contract("HasVestingHandler", (accounts) => {
         id: 0x12345
       });
     }
-    const Account = () => accounts[Math.floor(Math.random()*(accounts.length-1))+1];
+
+    const randAccount = () => accounts[Math.floor(Math.random()*(accounts.length-1))+1];
 
     before(async () => {
       dummyToken = await DummyToken.new();
@@ -87,7 +89,7 @@ contract("HasVestingHandler", (accounts) => {
     it('Should fail to setVestingHandler from Random address', async () => {
       try{
         await hasVestingHandler.setVestingHandler(vestingHandler.address, {
-          from: Account()
+          from: randAccount()
         });
         assert.fail('Random address should not be able to setVestingHandler');
       } catch (e) {
@@ -104,7 +106,7 @@ contract("HasVestingHandler", (accounts) => {
     })
 
     it('Should fail to overwrite VestingHandler', async () => {
-      const newVestingHandler = Account();
+      const newVestingHandler = randAccount();
       try{
         await hasVestingHandler.setVestingHandler(newVestingHandler, {
           from: owner
@@ -121,7 +123,7 @@ contract("HasVestingHandler", (accounts) => {
         assert.isAbove( releasableAmount.toNumber(), 0, 'Should have allocated tokens');
 
         await hasVestingHandler.release({
-          from: Account()
+          from: randAccount()
         });
         const newBalance = await dummyToken.balanceOf.call(vestingHandler.address);
 

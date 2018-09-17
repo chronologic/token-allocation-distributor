@@ -4,7 +4,8 @@ const TokenHandler = artifacts.require("./TokenHandler.sol");
 contract('TokenHandler', (accounts) => {
   let dummyToken;
   let tokenHandler;
-  const owner = accounts[0];
+
+  const [owner] = accounts;
 
   before(async () => {
     dummyToken = await DummyToken.new();
@@ -44,15 +45,15 @@ contract('TokenHandler', (accounts) => {
   it("Correctly sets the targetToken", async () => {
       await tokenHandler.setTargetToken(dummyToken.address,
         {
-            from: owner,
+          from: owner,
         });
 
       const returnedToken = await tokenHandler.targetToken();
       const expectedToken = dummyToken.address;
       assert.strictEqual(
-          returnedToken,
-          expectedToken,
-          "The expected dummyToken was returned from the Token Handler."
+        returnedToken,
+        expectedToken,
+        "The expected dummyToken was returned from the Token Handler."
       );
   })
 
@@ -61,24 +62,24 @@ contract('TokenHandler', (accounts) => {
 
       const expectedToken = dummyToken.address;
       assert.strictEqual(
-          returnedToken,
-          expectedToken,
-          "The expected dummyToken was returned from the Token Handler."
+        returnedToken,
+        expectedToken,
+        "The expected dummyToken was returned from the Token Handler."
       );
   })
 
   it("Fails to update the targetToken", async () => {
       try {
         await tokenHandler.setTargetToken(accounts[5],{
-            from: owner,
+          from: owner,
         });
 
         const returnedToken = await tokenHandler.targetToken();
         const unExpectedToken = accounts[5];
         assert.notStrictEqual(
-            returnedToken,
-            unExpectedToken,
-            "The expected dummyToken was not returned from the Token Handler."
+          returnedToken,
+          unExpectedToken,
+          "The expected dummyToken was not returned from the Token Handler."
         );
       } catch (e) {
         assert.exists(e)

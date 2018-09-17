@@ -2,9 +2,8 @@ const DummyToken = artifacts.require("./DummyToken.sol");
 const DummyVesting = artifacts.require("./DummyVesting.sol");
 const VestingHandler = artifacts.require("./VestingHandler.sol");
 
-
 contract("Vesting Handler", (accounts) => {
-    const me = accounts[0];
+    const [me] = accounts;
 
     let dummyToken;
     let dummyVesting;
@@ -12,6 +11,7 @@ contract("Vesting Handler", (accounts) => {
     let vestingConfig;
 
     const makeBlockchainTime = time => Math.floor(time/1000);
+
     const forceMine = async (time) => {
       await web3.currentProvider.send({
         jsonrpc: "2.0",
@@ -31,15 +31,15 @@ contract("Vesting Handler", (accounts) => {
         assert(dummyToken.address, "Dummy Token was deployed and has an address.");
 
         vestingConfig = {
-            _cliff: makeBlockchainTime(900000),
-            _duration: makeBlockchainTime(24000000),
-            _start: (await web3.eth.getBlock('latest')).timestamp
+          _cliff: makeBlockchainTime(900000),
+          _duration: makeBlockchainTime(24000000),
+          _start: (await web3.eth.getBlock('latest')).timestamp
         };
 
         vestingHandler = await VestingHandler.new(
-            0,
-            0,
-            dummyToken.address
+          0,
+          0,
+          dummyToken.address
         );
         assert(vestingHandler.address, "Vesting Handler was deployed and has an address.");
 
@@ -67,7 +67,7 @@ contract("Vesting Handler", (accounts) => {
 
 
     it('Should fail to set invalid Vesting Contract address', async () => {
-      try{
+      try {
         await vestingHandler.setVestingContract(1, 0, {
           from: me
         });

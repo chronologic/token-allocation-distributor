@@ -3,7 +3,7 @@ const HasDistributorHandler = artifacts.require("./HasDistributorHandler.sol")
 const WeightedTokenDistributor = artifacts.require("./WeightedTokenDistributor.sol")
 
 contract("HasDistributorHandler", (accounts) => {
-    const owner = accounts[0];
+    const [owner] = accounts;
 
     let dummyToken;
     let weightedTokenDistributor;
@@ -12,13 +12,14 @@ contract("HasDistributorHandler", (accounts) => {
     const totalStakeholders = 3;
     const initialStakeholderCount = 3;
 
-    const initialStakeholders = accounts.slice(1, initialStakeholderCount+1);
+    const initialStakeholders = accounts.slice(1, initialStakeholderCount + 1);
     const initialWeights = [
         3,
         2,
         5,
     ];
-    const Account = () => accounts[Math.floor(Math.random()*(accounts.length-1))+1];
+
+    const randAccount = () => accounts[Math.floor(Math.random()*(accounts.length - 1)) + 1];
 
     before(async () => {
         dummyToken = await DummyToken.new();
@@ -72,9 +73,9 @@ contract("HasDistributorHandler", (accounts) => {
     })
 
     it('Should fail to setTokenDistributor from Random address', async () => {
-      try{
+      try {
         await hasDistributorHandler.setTokenDistributor(0, weightedTokenDistributor.address, {
-          from: Account()
+          from: randAccount()
         });
         assert.fail('Random address should not be able to setTokenDistributor');
       } catch (e) {

@@ -10,8 +10,8 @@ contract('WithVestingContract', (accounts) => {
   let vestingConfig;
   const me = accounts[0];
   const stakeHoldersCount = 5;
-  const stakeHolders = accounts.slice(1, stakeHoldersCount);
-  const stakeHoldersWeights = [10,15,2,30,34];
+  const stakeHolders = accounts.slice(1, stakeHoldersCount + 1);
+  const stakeHoldersWeights = [10, 15, 2, 30, 34];
   const tokensToMint = 100000 * 1e18;
 
   const makeBlockchainTime = time => Math.floor(time/1000);
@@ -30,14 +30,14 @@ contract('WithVestingContract', (accounts) => {
     });
   }
 
-  before( async () => {
+  before(async () => {
     dummyToken = await DummyToken.new();
     assert(dummyToken.address, "Dummy Token was not deployed or does not have an address.");
 
     vestingConfig = {
-        _cliff: makeBlockchainTime(900000),
-        _duration: makeBlockchainTime(24000000),
-        _start: (await web3.eth.getBlock('latest')).timestamp
+      _cliff: makeBlockchainTime(900000),
+      _duration: makeBlockchainTime(24000000),
+      _start: (await web3.eth.getBlock('latest')).timestamp
     }
 
     instance = await WithVestingContract.new(
@@ -79,7 +79,7 @@ contract('WithVestingContract', (accounts) => {
   })
 
   it('successfully releases and distributes tokens from Random address', async () => {
-    const expectedBeforeBalances = [0,0,0,0];
+    const expectedBeforeBalances = [0, 0, 0, 0, 0];
     const beforeBalances = [];
 
     const blocktime = (await web3.eth.getBlock('latest')).timestamp;
@@ -102,10 +102,12 @@ contract('WithVestingContract', (accounts) => {
     });
     const expectedAfterBalances = await Promise.all(expectedAfterBalancesPromises);
 
-    const tx = await instance.releaseAndDistribute({
+    await instance.releaseAndDistribute({
       from: me
     });
+
     const afterBalances = [];
+
     await Promise.all(balances(afterBalances));
     assert.deepEqual( afterBalances, expectedAfterBalances, 'Wrong number of Tokens distributed')
   })
