@@ -7,7 +7,7 @@ import "../installed_contracts/zeppelin-solidity/contracts/ownership/Ownable.sol
  * @dev The ContractOwner contract serves the role of interactng with the functions of Ownable contracts,
  * this simplifies the implementation of "user permissions".
  */
-contract ContractOwner is Ownable {
+contract HasContracts is Ownable {
 
   /**
    * @dev Relinquish control of the owned _contract.

@@ -1,9 +1,9 @@
 const Ownable = artifacts.require("./Ownable.sol");
-const ContractOwner = artifacts.require("./ContractOwner.sol");
+const HasContracts = artifacts.require("./HasContracts.sol");
 const NULL_ADDRESS = '0x0000000000000000000000000000000000000000';
 
-contract('ContractOwner', (accounts) => {
-  let contractOwner;
+contract('HasContracts', (accounts) => {
+  let hasContracts;
   const owner = accounts[0];
 
   const DummyOwnable = async(_owner) => {
@@ -22,17 +22,17 @@ contract('ContractOwner', (accounts) => {
   const Recipient = () => accounts[Math.floor(Math.random()*(accounts.length-1))+1];
 
   before(async () => {
-    contractOwner = await ContractOwner.new({
+    hasContracts = await HasContracts.new({
       from: owner
     });
-    assert.isNotNull(contractOwner, 'Failed to deploy contractOwner');
+    assert.isNotNull(hasContracts, 'Failed to deploy hasContracts');
   })
 
   it('Should fail to renounceOwnedOwnership from random address', async () => {
-    const dummyOwned = await DummyOwnable(contractOwner.address);
+    const dummyOwned = await DummyOwnable(hasContracts.address);
     const recipient = Recipient();
     try{
-      await contractOwner.renounceOwnedOwnership(dummyOwned.address, {
+      await hasContracts.renounceOwnedOwnership(dummyOwned.address, {
         from: recipient
       });
       asset.fail('Random address illegally renounceOwnedOwnership');
@@ -42,8 +42,8 @@ contract('ContractOwner', (accounts) => {
   })
 
   it('Should successfully renounceOwnedOwnership', async () => {
-    const dummyOwned = await DummyOwnable(contractOwner.address);
-    await contractOwner.renounceOwnedOwnership(dummyOwned.address,{
+    const dummyOwned = await DummyOwnable(hasContracts.address);
+    await hasContracts.renounceOwnedOwnership(dummyOwned.address,{
       from: owner
     });
     const newOwner = await dummyOwned.owner.call();
@@ -51,10 +51,10 @@ contract('ContractOwner', (accounts) => {
   })
 
   it('Should fail to transferOwnedOwnership from random address', async () => {
-    const dummyOwned = await DummyOwnable(contractOwner.address);
+    const dummyOwned = await DummyOwnable(hasContracts.address);
     const recipient = Recipient();
     try{
-      await contractOwner.transferOwnedOwnership(
+      await hasContracts.transferOwnedOwnership(
         dummyOwned.address, recipient, {
           from: accounts[0]
         });
@@ -65,9 +65,9 @@ contract('ContractOwner', (accounts) => {
   })
 
   it('Should successfully transferOwnedOwnership', async () => {
-    const dummyOwned = await DummyOwnable(contractOwner.address);
+    const dummyOwned = await DummyOwnable(hasContracts.address);
     const recipient = Recipient();
-    await contractOwner.transferOwnedOwnership(
+    await hasContracts.transferOwnedOwnership(
       dummyOwned.address, recipient, {
         from: owner
       })
