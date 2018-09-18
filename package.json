@@ -9,7 +9,7 @@
   "scripts": {
     "build-contracts": "sol-merger \"./contracts/*.sol\" ./build",
     "deploy:ropsten": "truffle deploy --network ropsten",
-    "deploy:kovan": "trufle deploy --network kovan",
+    "deploy:kovan": "truffle deploy --network kovan",
     "test": "truffle test"
   },
   "repository": {
