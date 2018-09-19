@@ -9,7 +9,6 @@ install:
   - npm install
   - truffle version
 script:
-  - truffle compile
   - npm test
 before_script:
   - ganache-cli > /dev/null &
