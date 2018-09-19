@@ -30,7 +30,7 @@
     "url": "https://github.com/chronologic/token-allocation-distributor/issues"
   },
   "homepage": "https://github.com/chronologic/token-allocation-distributor#readme",
-  "dependencies" : {
+  "dependencies": {
     "truffle-hdwallet-provider": "0.0.6"
   },
   "devDependencies": {
