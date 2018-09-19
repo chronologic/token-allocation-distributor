@@ -10,6 +10,8 @@ install:
   - ganache-cli --version
   - npm install
 script:
+  - echo $NODE_PATH
+  - which node
   - npm test
 before_script:
   - ganache-cli > /dev/null &
