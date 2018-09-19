@@ -6,7 +6,8 @@ node_js:
 install:
   - npm install -g ganache-cli
   - ganache-cli --version
-  - npm install --verbose
+  - npm install
+  - npm install bn.js
   - truffle version
 script:
   - echo $NODE_PATH
