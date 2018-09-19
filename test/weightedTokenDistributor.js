@@ -89,7 +89,7 @@ contract("Weighted Token Distributor", (accounts) => {
     );
   })
 
-  it('Correctly distributes 100 tokens', async () => {
+  it('Correctly distributes 100 tokens from any address', async () => {
     await dummyToken.mint(
       weightedTokenDistributor.address,
       100,
@@ -120,7 +120,9 @@ contract("Weighted Token Distributor", (accounts) => {
       50,
     ];
 
-    await weightedTokenDistributor.distribute();
+    await weightedTokenDistributor.distribute({
+      from: accounts[5]
+    });
 
     await Promise.all(initialStakeholders.map(async (stakeholder, idx) => {
       assert.strictEqual(
