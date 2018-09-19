@@ -4,10 +4,10 @@ language: node_js
 node_js:
   - '8.0.0'
 install:
-  - npm install -g truffle
+  - npm install -g truffle --unsafe-perms
   - truffle version
   - npm install -g ganache-cli
-  - npm install --unsafe-perms
+  - npm install
 script:
   - truffle test
 before_script:
