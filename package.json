@@ -34,8 +34,8 @@
     "truffle-hdwallet-provider": "0.0.6"
   },
   "devDependencies": {
+    "ethereumjs-abi": "^0.6.5",
     "sol-merger": "^0.1.2",
-    "truffle": "^4.1.14",
-    "web3": "^0.20.7"
+    "truffle": "^4.1.14"
   }
 }
