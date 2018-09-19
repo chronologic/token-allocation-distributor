@@ -31,10 +31,10 @@
   },
   "homepage": "https://github.com/chronologic/token-allocation-distributor#readme",
   "dependencies": {
+    "truffle": "^4.1.14",
     "truffle-hdwallet-provider": "0.0.6"
   },
   "devDependencies": {
-    "sol-merger": "^0.1.2",
-    "truffle": "^4.1.14"
+    "sol-merger": "^0.1.2"
   }
 }

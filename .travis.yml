@@ -7,7 +7,6 @@ install:
   - npm install -g ganache-cli
   - ganache-cli --version
   - npm install
-  - npm install bn.js
   - truffle version
 script:
   - truffle compile
