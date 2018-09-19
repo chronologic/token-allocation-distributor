@@ -1,6 +1,6 @@
 {
   "name": "token-allocation-distributor",
-  "version": "0.0.1",
+  "version": "0.2.0",
   "description": "Distribute allocated ERC20 tokens based on set conditions",
   "main": "truffle-config.js",
   "directories": {
@@ -8,8 +8,9 @@
   },
   "scripts": {
     "build-contracts": "sol-merger \"./contracts/*.sol\" ./build",
-    "test": "truffle test 'test/!(withVestingContract.js)' && npm run test:vesting",
-    "test:vesting": "truffle test test/withVestingContract.js"
+    "deploy:ropsten": "truffle deploy --network ropsten",
+    "deploy:kovan": "truffle deploy --network kovan",
+    "test": "truffle test"
   },
   "repository": {
     "type": "git",
@@ -29,7 +30,12 @@
     "url": "https://github.com/chronologic/token-allocation-distributor/issues"
   },
   "homepage": "https://github.com/chronologic/token-allocation-distributor#readme",
+  "dependencies": {
+    "truffle-hdwallet-provider": "0.0.6"
+  },
   "devDependencies": {
-    "sol-merger": "^0.1.2"
+    "ethereumjs-abi": "^0.6.5",
+    "sol-merger": "^0.1.2",
+    "truffle": "^4.1.14"
   }
 }

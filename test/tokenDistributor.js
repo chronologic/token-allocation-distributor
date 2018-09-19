@@ -2,39 +2,36 @@ const DummyToken = artifacts.require("./DummyToken.sol");
 const TokenDistributor = artifacts.require("./TokenDistributor.sol");
 
 contract('TokenDistributor', (accounts) => {
-  let token;
+
+  let dummyToken;
   let tokenDistributor;
-  const me = accounts[0];
+
   const stakeHoldersCount = Math.floor((accounts.length-3) * Math.random()) + 1;
-  const stakeHolders = accounts.filter( (account, index) => {
+  const stakeHolders = accounts.filter( (_, index) => {
     return index > 0 && index < (stakeHoldersCount+1);
   })
   console.log('Total StakeHolders: ', stakeHoldersCount)
   console.log('StakeHolders: ', stakeHolders)
 
   before(async () => {
-    await DummyToken.new().then((_instance) => {
-      token = _instance;
-    }).then( async () => {
-      await TokenDistributor.new(
-        token.address,
-        stakeHoldersCount,
-        stakeHolders
-      ).then((_instance) => {
-
-        tokenDistributor = _instance;
-      })
-    })
+    dummyToken = await DummyToken.new();
+    assert.isNotNull(dummyToken.address, 'Faied to deploy DummyToken with address');
+    tokenDistributor = await TokenDistributor.new(
+      dummyToken.address,
+      stakeHoldersCount,
+      stakeHolders
+    );
+    assert.isNotNull(tokenDistributor.address, 'Faied to deploy TokenDistributor with address');
 
     const targetToken = await tokenDistributor.targetToken.call();
     assert.strictEqual(
         targetToken,
-        token.address,
+        dummyToken.address,
         "Wrong targetToken was set in the TOken Distributor."
     );
 
     console.log('Web3: ', web3.version.api ? web3.version.api : web3.version);
-    console.log('Token: ', token.address)
+    console.log('Token: ', dummyToken.address)
     console.log('TokenDistributor: ',tokenDistributor.address)
   })
 
@@ -50,7 +47,7 @@ contract('TokenDistributor', (accounts) => {
       const expectedStakeHolders = stakeHolders.map(() => true);
       const returnedStakeHolders = [];
 
-      for ( let s = 0; s < stakeHolders.length; s++) {
+      for (let s = 0; s < stakeHolders.length; s++) {
         returnedStakeHolders.push(
           (await tokenDistributor.stakeHolders.call(s)) === stakeHolders[s]
         )
@@ -76,7 +73,7 @@ contract('TokenDistributor', (accounts) => {
   it('Correctly counts stakeHolders', async () => {
       const returnedCount = await tokenDistributor.countStakeHolders();
 
-      const expectedCount = stakeHolders.filter( stakeholder => Number(stakeholder) > 0).length;
+      const expectedCount = stakeHolders.filter(stakeholder => Number(stakeholder) > 0).length;
 
       assert.strictEqual(
           returnedCount.toNumber(),
@@ -87,11 +84,11 @@ contract('TokenDistributor', (accounts) => {
 
   it('Correctly calculates the portion split by providing total avaialble tokens', async () => {
     //Use weightedTokenDistributor.contract to access overloaded functions
-      const expectedCount = stakeHolders.filter( stakeholder => Number(stakeholder) > 0).length;
+      const expectedCount = stakeHolders.filter(stakeholder => Number(stakeholder) > 0).length;
       const total = Math.floor(256 ** (10 * Math.random()));
       const returnedPortion = await tokenDistributor.getPortion(total);
 
-      const expectedPortion = Math.floor( total /  expectedCount );
+      const expectedPortion = Number(Math.floor(total / expectedCount ).toPrecision(18));
 
       assert.strictEqual(
           returnedPortion.toNumber(),
@@ -105,22 +102,22 @@ contract('TokenDistributor', (accounts) => {
     assert.isFalse(falseisDistributionDue, 'TokenHandler should have no tokens');
 
     const tokensToMint = Math.floor(10 ** (50 * Math.random()));
-    await token.mint(tokenDistributor.address, tokensToMint);
+    await dummyToken.mint(tokenDistributor.address, tokensToMint);
 
     const isDistributionDue = await tokenDistributor.contract.isDistributionDue[''].call();
     assert.isTrue(isDistributionDue, 'Failed to detect isDistributionDue');
   })
 
   it('Fails to distribute specific tokens from random address', async () => {
-    const balance = await tokenDistributor.getTokenBalance.call(token.address);
+    const balance = await tokenDistributor.getTokenBalance.call(dummyToken.address);
     assert.isAbove(balance.toNumber(), 0, 'Token Distributor should have allocated tokens');
     const expectedBalance = stakeHolders.map( () => true );
 
     try{
-      await tokenDistributor.distributeTokens(token.address, {
+      await tokenDistributor.distributeTokens(dummyToken.address, {
         from: accounts[3]
       });
-      const returnedBalance = await Promise.all(stakeHolders.map( async (stakeHolder) => (await token.balanceOf(stakeHolder)).toNumber() === 0));
+      const returnedBalance = await Promise.all(stakeHolders.map( async (stakeHolder) => (await dummyToken.balanceOf(stakeHolder)).toNumber() === 0));
 
       assert.deepEqual(
           returnedBalance,
@@ -133,16 +130,16 @@ contract('TokenDistributor', (accounts) => {
   })
 
   it("Correctly distributes tokens from any address", async () => {
-    const balance = await tokenDistributor.getTokenBalance.call(token.address);
+    const balance = await tokenDistributor.getTokenBalance.call(dummyToken.address);
     assert.isAbove(balance.toNumber(), 0, 'Token Distributor should have allocated tokens');
 
     const portion = await tokenDistributor.getPortion.call(balance.toFixed());
-    const expectedBalance = stakeHolders.map( () => true );
+    const expectedBalance = stakeHolders.map(() => true );
 
     await tokenDistributor.distribute({
       from: accounts[3]
     });
-    const returnedBalance = await Promise.all(stakeHolders.map( async (stakeHolder) => (await token.balanceOf(stakeHolder)).toFixed() === portion.toFixed() ));
+    const returnedBalance = await Promise.all(stakeHolders.map( async (stakeHolder) => (await dummyToken.balanceOf(stakeHolder)).toFixed() === portion.toFixed() ));
 
     assert.deepEqual(
         returnedBalance,
