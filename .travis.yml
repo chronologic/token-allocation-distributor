@@ -9,7 +9,7 @@ install:
   - npm install -g ganache-cli
   - npm install --unsafe-perms
 script:
-  - npm test
+  - truffle test
 before_script:
   - ganache-cli > /dev/null &
   - sleep 5
