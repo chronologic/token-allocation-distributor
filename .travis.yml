@@ -7,7 +7,7 @@ install:
   - npm install -g truffle
   - truffle version
   - npm install -g ganache-cli
-  - npm install
+  - npm install --unsafe-perms
 script:
   - npm test
 before_script:
