@@ -10,8 +10,7 @@ install:
   - npm install bn.js
   - truffle version
 script:
-  - echo $NODE_PATH
-  - which node
+  - truffle compile
   - npm test
 before_script:
   - ganache-cli > /dev/null &
